@@ -30,6 +30,7 @@ public class LTLActivityTest
         try {
             NewsTitle title = inter.getNewsTitle(1, 10, mainActivity);
             System.out.println(title.list.get(0).news_ID);
+            inter.addCollectionNews(title,mainActivity);
         }catch (Exception e)
         {
             System.out.print("No\n");

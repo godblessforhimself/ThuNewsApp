@@ -36,5 +36,5 @@ dependencies {
     //Note:sunflower是TTS模块的包，core是新浪微博模块的包
     compile files('libs/Sunflower.jar')
     compile (name:'core-4.1.0-openDefaultRelease', ext:'aar')
-    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.robolectric:robolectric:3.4'
 }
