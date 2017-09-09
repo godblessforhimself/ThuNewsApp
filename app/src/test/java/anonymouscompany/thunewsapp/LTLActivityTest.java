@@ -31,7 +31,13 @@ public class LTLActivityTest
         try
         {
             NewsText text=inter.getNewsText("201608090432c815a85453c34d8ca43a591258701e9b",mainActivity);
-
+            inter.addCollectionNews(text,mainActivity);
+            text=inter.getNewsText("201608100421f2d8cf63b03d431eb847d4b3e7af8f24",mainActivity);
+            inter.addCollectionNews(text,mainActivity);
+            text=inter.getNewsText("201608090432c815a85453c34d8ca43a591258701e9b",mainActivity);
+            inter.delCollectionNews(text,mainActivity);
+            List<NewsTitle> list=inter.getCollectionNews(mainActivity);
+            System.out.println(list.get(0).list.get(0).news_ID);
         }catch (Exception e)
         {
             System.out.print("No\n");

@@ -17,9 +17,12 @@ public interface BackendInterface
     List<NewsTitle> getCollectionNews(Context context);//返回收藏的所有新闻标题
     void addCollectionNews(NewsText text, Context context);//收藏新闻
     void delCollectionNews(NewsText text, Context context);//删除收藏新闻
-    void addShiledWord(String keyword, Context context);//添加屏蔽词
+    void addShiledWord(String shieldword, Context context);//添加屏蔽词
+    void delShiledWord(String shieldword,Context context);//删除屏蔽词
     void setPicturesDisplay(int type, Context context);//保持图片配置信息，type=0显示图片，type=1隐藏图片
     int getPicturesDisplay(Context context);//获得图片配置信息
     void viewed(NewsText text, Context context);//已看过新闻
+    boolean isviewed(String news_ID,Context context);//是否看过
+    List<NewsTitle> searchNewsTitel(String keyword,Context context) throws Exception;//搜索新闻
 }
 

@@ -2,6 +2,7 @@ package anonymouscompany.thunewsapp;
 
 import android.content.Context;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -43,7 +44,6 @@ public class BackendInter implements  BackendInterface
         {
             String str=ReversedNews.getReversedNewsText(news_ID);
             text=JasonClass.StringtoJson(str,NewsText.class);
-            Storage.addTextFile(text,context);
         }
         return text;
     }
@@ -87,6 +87,23 @@ public class BackendInter implements  BackendInterface
         if (ConfigI.load(text.news_ID,context).equals("1")) return;
         ConfigI.Save(text.news_ID,"1",context);
         Storage.addTextFile(text,context);
-     }//已看过新闻
-
+     }
+    public boolean isviewed(String news_ID,Context context)
+    {
+        if (ConfigI.load(news_ID,context).equals("1")) return true;
+        return false;
+    }
+    public List<NewsTitle> searchNewsTitel(String keyword,Context context) throws  Exception
+    {
+        String str=ReversedNews.getReversedSearchNews(keyword);
+        List<NewsTitle> list=JasonClass.StringtoJson(str,List.class);
+        List<NewsTitle> newlist=new LinkedList<NewsTitle>();
+        for (int i=0;i<list.size();i++)
+        {
+                NewsText text=getNewsText(list.get(i),context);
+                if (Storage.isShield(text,context)) continue;
+                newlist.add(list.get(i));
+        }
+        return newlist;
+    }
 }

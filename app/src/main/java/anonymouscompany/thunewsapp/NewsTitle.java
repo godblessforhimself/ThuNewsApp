@@ -3,6 +3,7 @@ package anonymouscompany.thunewsapp;
 /**
  * Created by LTL on 2017/9/8.
  */
+import java.util.LinkedList;
 import java.util.List;
 
 public class NewsTitle //新闻标题
@@ -15,10 +16,12 @@ public class NewsTitle //新闻标题
         }
         NewsTitle()
         {
+                list=new LinkedList<MyList>();
                 pageNo=0;pageSize=0;totalPages=0;totalRecords=0;
         }
         NewsTitle(NewsText text)
         {
+                list=new LinkedList<MyList>();
                 MyList own=new MyList();
                 own.news_ID=text.news_ID;
                 own.newsClassTag=text.newsClassTag;
@@ -33,6 +36,7 @@ public class NewsTitle //新闻标题
                 own.news_Intro="";
                 list.add(own);
                 pageNo=0;pageSize=0;totalPages=0;totalRecords=0;
+
         }
 }
 
