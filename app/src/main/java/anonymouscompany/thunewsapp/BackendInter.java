@@ -12,7 +12,7 @@ public class BackendInter implements  BackendInterface
 {
    public  NewsTitle getNewsTitle(int page, int pagesize, Context context) throws Exception
     {
-        String oncesee=Config.load("page"+page+"pagesize"+pagesize,context);
+        String oncesee=ConfigI.load("page"+page+"pagesize"+pagesize,context);
         NewsTitle title;
         if (oncesee.equals("1"))  title=Storage.findTitle(page,pagesize,context);
             else
@@ -29,7 +29,7 @@ public class BackendInter implements  BackendInterface
     }
     public NewsText getNewsText(NewsTitle title,Context context) throws Exception
     {
-        String oncesee=Config.load("page"+title.pageNo+"pagesize"+title.pageSize,context);
+        String oncesee=ConfigI.load("page"+title.pageNo+"pagesize"+title.pageSize,context);
         NewsText text;
         if (oncesee.equals("1")) text=Storage.findText(title.list.get(0).news_ID,context);
          else
@@ -61,11 +61,11 @@ public class BackendInter implements  BackendInterface
     }
     public void setPicturesDisplay(int type,Context context)
     {
-        Config.Save("PicturesDisplay",Integer.toString(type),context);
+        ConfigI.Save("PicturesDisplay",Integer.toString(type),context);
     }
     public int getPicturesDisplay(Context context)
     {
-        return Integer.parseInt(Config.load("PicturesDisplay",context));
+        return Integer.parseInt(ConfigI.load("PicturesDisplay",context));
     }
     public void viewed(NewsTitle title,NewsText text,Context context)
     {

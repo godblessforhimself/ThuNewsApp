@@ -1,5 +1,9 @@
 package anonymouscompany.thunewsapp;
 
+/**
+ * Created by ltl on 2017/9/9.
+ */
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -7,7 +11,7 @@ import android.content.SharedPreferences;
  * Created by LTL on 2017/9/8.
  */
 
-public class Config //用户设置保持
+public class ConfigI //用户设置保持
 {
     static public void Save(String key,String value,Context context)
     {
