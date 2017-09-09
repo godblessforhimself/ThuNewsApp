@@ -55,12 +55,15 @@ public class BackendInter implements  BackendInterface
     {
         return Storage.findCollectionNews(context);
     }
-    public void addCollectionNews(NewsTitle title,Context context)
+    public void addCollectionNews(NewsText text,Context context)
     {
+        viewed(text,context);
+        NewsTitle title=new NewsTitle(text);
         Storage.addCollectionFile(title,context);
     }
-    public void delCollectionNews(NewsTitle title ,Context context)
+    public void delCollectionNews(NewsText text ,Context context)
     {
+        NewsTitle title=new NewsTitle(text);
         Storage.delCollectionFile(title,context);
     }
     public  void addShiledWord(String shieldword,Context context)
@@ -81,6 +84,7 @@ public class BackendInter implements  BackendInterface
     }
     public void viewed(NewsText text,Context context)
     {
+        if (ConfigI.load(text.news_ID,context).equals("1")) return;
         ConfigI.Save(text.news_ID,"1",context);
         Storage.addTextFile(text,context);
      }//已看过新闻
