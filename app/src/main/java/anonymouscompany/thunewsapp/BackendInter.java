@@ -10,39 +10,46 @@ import java.util.List;
 
 public class BackendInter implements  BackendInterface
 {
-   public  NewsTitle getNewsTitle(int page, int pagesize, Context context) throws Exception
+    public  NewsTitle getNewsTitle(int page, int pagesize, Context context) throws Exception
     {
-        String oncesee=ConfigI.load("page"+page+"pagesize"+pagesize,context);
         NewsTitle title;
-        if (oncesee.equals("1"))  title=Storage.findTitle(page,pagesize,context);
-            else
-        {
-            String str=ReversedNews.getReversedNews(page,pagesize);
-            title=JasonClass.StringtoJson(str,NewsTitle.class);
-
-        }
-
+        String str=ReversedNews.getReversedNews(page,pagesize);
+        title=JasonClass.StringtoJson(str,NewsTitle.class);
         NewsText text=getNewsText(title,context);
-
-       if (Storage.isShield(text,context))
+        if(Storage.isShield(text,context))
         {
             Exception e=new Exception();
             throw e;
         }
         return title;
     }
-    public NewsText getNewsText(NewsTitle title,Context context) throws Exception
+    public NewsTitle getNewsTitle(String news_ID,Context context) throws Exception
     {
-        String oncesee=ConfigI.load("page"+title.pageNo+"pagesize"+title.pageSize,context);
-        NewsText text;
-        if (oncesee.equals("1")) text=Storage.findText(title.list.get(0).news_ID,context);
-         else
+        NewsText text=getNewsText(news_ID,context);
+        if(Storage.isShield(text,context))
         {
-            String str=ReversedNews.getReversedNewsText(title.list.get(0).news_ID);
-            System.out.println(str);
+            Exception e=new Exception();
+            throw e;
+        }
+        NewsTitle title=new NewsTitle(text);
+        return title;
+    }
+    public NewsText getNewsText(String news_ID,Context context) throws Exception
+    {
+        String oncesee=ConfigI.load(news_ID,context);
+        NewsText text;
+        if (oncesee.equals("1")) text=Storage.findText(news_ID,context);
+        else
+        {
+            String str=ReversedNews.getReversedNewsText(news_ID);
             text=JasonClass.StringtoJson(str,NewsText.class);
+            Storage.addTextFile(text,context);
         }
         return text;
+    }
+    public NewsText getNewsText(NewsTitle title,Context context) throws Exception
+    {
+        return getNewsText(title.list.get(0).news_ID,context);
     }
     public List<NewsTitle> getCollectionNews(Context context)
     {
@@ -72,9 +79,9 @@ public class BackendInter implements  BackendInterface
     {
         return Integer.parseInt(ConfigI.load("PicturesDisplay",context));
     }
-    public void viewed(NewsTitle title,NewsText text,Context context)
+    public void viewed(NewsText text,Context context)
     {
-        Storage.addTitleFile(title,context);
+        ConfigI.Save(text.news_ID,"1",context);
         Storage.addTextFile(text,context);
      }//已看过新闻
 

@@ -13,6 +13,26 @@ public class NewsTitle //新闻标题
         {
                 String newsClassTag,news_ID,news_Source,news_Title,news_Time,news_URL,news_Author,lang_Type,news_Pictures,news_Video,news_Intro;
         }
-        int viewd=0;
+        NewsTitle()
+        {
+                pageNo=0;pageSize=0;totalPages=0;totalRecords=0;
+        }
+        NewsTitle(NewsText text)
+        {
+                MyList own=new MyList();
+                own.news_ID=text.news_ID;
+                own.newsClassTag=text.newsClassTag;
+                own.news_Source=text.news_Source;
+                own.news_Title=text.news_Title;
+                own.news_Time=text.news_Time;
+                own.news_URL=text.news_URL;
+                own.news_Author=text.news_Author;
+                own.lang_Type=text.lang_Type;
+                own.news_Pictures=text.news_Pictures;
+                own.news_Video=text.news_Video;
+                own.news_Intro="";
+                list.add(own);
+                pageNo=0;pageSize=0;totalPages=0;totalRecords=0;
+        }
 }
 

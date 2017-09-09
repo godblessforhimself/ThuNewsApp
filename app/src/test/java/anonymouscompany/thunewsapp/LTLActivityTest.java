@@ -12,6 +12,7 @@ import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by LTL on 2017/9/9.
@@ -31,6 +32,12 @@ public class LTLActivityTest
             NewsTitle title = inter.getNewsTitle(1, 10, mainActivity);
             System.out.println(title.list.get(0).news_ID);
             inter.addCollectionNews(title,mainActivity);
+            title = inter.getNewsTitle(2, 10, mainActivity);
+            inter.addCollectionNews(title,mainActivity);
+            title = inter.getNewsTitle(1, 10, mainActivity);
+            inter.delCollectionNews(title,mainActivity);
+            List<NewsTitle> list=inter.getCollectionNews(mainActivity);
+            System.out.println(list.size());
         }catch (Exception e)
         {
             System.out.print("No\n");
