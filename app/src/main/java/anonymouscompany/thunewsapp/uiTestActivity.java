@@ -25,6 +25,8 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static android.app.PendingIntent.getActivity;
+
 
 public class uiTestActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -35,16 +37,12 @@ public class uiTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.swipe);
+        setContentView(R.layout.ui_test);
         setTitle("uiTestActivity");
-        SwipeLayout swipeLayout =  (SwipeLayout)findViewById(R.id.swipe0);
-
-//set show mode.
+        recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
+     /***   SwipeLayout swipeLayout =  (SwipeLayout)findViewById(R.id.swipe0);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-
-//add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
         swipeLayout.addDrag(SwipeLayout.DragEdge.Left, findViewById(R.id.bottom_wap));
-
         swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
             @Override
             public void onClose(SwipeLayout layout) {
@@ -76,12 +74,13 @@ public class uiTestActivity extends AppCompatActivity {
                 //when user's hand released.
             }
         });
+      */
         // Layout Managers:
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Item Decorator:
         //recyclerView.addItemDecoration(new DividerItemDecoration(R.drawable.divider));
-        recyclerView.setItemAnimator(new FadeInLeftAnimator());
+       // recyclerView.setItemAnimator(new FadeInLeftAnimator());
 
         // Adapter:
         String[] adapterData = new String[]{"Alabama", "Alaska", "Arizona", "Arkansas", "California",
@@ -91,9 +90,44 @@ public class uiTestActivity extends AppCompatActivity {
                 "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
                 "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
         mDataSet = new ArrayList<String>(Arrays.asList(adapterData));
-        mAdapter = new RecyclerViewAdapter(this, mDataSet);
-        ((RecyclerViewAdapter) mAdapter).setMode(Attributes.Mode.Single);
+      /*  mAdapter = new RecyclerViewAdapter(this, mDataSet);
+        ((RecyclerViewAdapter) mAdapter).setMode(Attributes.Mode.Single);*/
+        mAdapter = new HomeAdapter();
         recyclerView.setAdapter(mAdapter);
+    }
+    class mViewHolder extends RecyclerView.ViewHolder
+    {
+        TextView tv;
+        public mViewHolder(View itemView) {
+            super(itemView);
+            tv = itemView.findViewById(R.id.textView_0);
+        }
+        public void setText(String text)
+        {
+            tv.setText(text);
+        }
+    }
+    class HomeAdapter extends RecyclerView.Adapter<mViewHolder>
+    {
+        @Override
+        public mViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            LayoutInflater layoutInflater = LayoutInflater.from(uiTestActivity.this);
+            View view = layoutInflater.inflate(R.layout.plain_recycler,parent,false);
+            Log.d("Tag","parent");
+            return new mViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(mViewHolder holder, int position) {
+            holder.setText(Integer.toString(position));
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return 15;
+        }
     }
 }
 

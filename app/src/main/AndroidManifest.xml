@@ -31,7 +31,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".uiTestActivity"></activity>
+        <activity android:name=".uiTestActivity"
+            android:exported="true"></activity>
         <activity android:name=".sideMenuTestActivity"
             android:exported="true"></activity>
     </application>
