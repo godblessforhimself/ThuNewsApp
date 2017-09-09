@@ -18,9 +18,13 @@ public class BackendInter implements  BackendInterface
             else
         {
             String str=ReversedNews.getReversedNews(page,pagesize);
-           title=JasonClass.StringtoJson(str,NewsTitle.class);
+            title=JasonClass.StringtoJson(str,NewsTitle.class);
+
         }
-        if (Storage.isShield(title,context))
+
+        NewsText text=getNewsText(title,context);
+
+       if (Storage.isShield(text,context))
         {
             Exception e=new Exception();
             throw e;
@@ -35,6 +39,7 @@ public class BackendInter implements  BackendInterface
          else
         {
             String str=ReversedNews.getReversedNewsText(title.list.get(0).news_ID);
+            System.out.println(str);
             text=JasonClass.StringtoJson(str,NewsText.class);
         }
         return text;

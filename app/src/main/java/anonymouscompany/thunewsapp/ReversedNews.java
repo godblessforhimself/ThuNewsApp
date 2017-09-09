@@ -27,7 +27,7 @@ public class ReversedNews //连接服务器
     }
     static public String getReversedNewsText(String newid) throws IOException
     {
-        URL website = new URL("http://166.111.68.66:2042//news/action/query/detail?newsId="+newid);
+        URL website = new URL("http://166.111.68.66:2042/news/action/query/detail?newsId="+newid);
         HttpURLConnection con = (HttpURLConnection)website.openConnection();
         InputStreamReader in = new InputStreamReader(con.getInputStream(),"utf-8");
         BufferedReader buffer = new BufferedReader(in);

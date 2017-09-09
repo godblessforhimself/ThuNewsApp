@@ -23,7 +23,7 @@ public class LTLActivityTest
 {
 
     @Test
-    public void testJson()
+    public void testBack()
     {
         MainActivity mainActivity = Robolectric.setupActivity(MainActivity.class);
         BackendInterface inter=new BackendInter();
@@ -36,5 +36,16 @@ public class LTLActivityTest
         }
 
         Assert.assertEquals(1,1);
+    }
+    @Test
+    public void testJason()
+    {
+        try {
+            String str = ReversedNews.getReversedNewsText("20160913041301d5fc6a41214a149cd8a0581d3a014f");
+            NewsText text = JasonClass.StringtoJson(str, NewsText.class);
+        }catch(Exception e)
+        {
+
+        }
     }
 }
