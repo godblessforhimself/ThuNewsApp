@@ -17,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { java.srcDirs = ['src/main/java', 'src/main/java/uitest'] } }
 }
 repositories {
     flatDir {
@@ -29,12 +30,24 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-    compile 'com.google.code.gson:gson:2.8.1'
     //Note:sunflower是TTS模块的包，core是新浪微博模块的包
     compile files('libs/Sunflower.jar')
-    compile (name:'core-4.1.0-openDefaultRelease', ext:'aar')
+    compile(name: 'core-4.1.0-openDefaultRelease', ext: 'aar')
+    compile 'com.android.support:appcompat-v7:21.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.google.code.gson:gson:2.8.1'
+    testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
+    compile 'com.android.support:recyclerview-v7:21.+'
+}
+configurations.all {
+
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '25.3.0'//默认使用的版本
+            }
+        }
+    }
 }
