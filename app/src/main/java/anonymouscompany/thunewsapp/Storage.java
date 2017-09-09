@@ -120,26 +120,15 @@ public class Storage
         }
         return list;
     }
-    public static boolean isShield(NewsTitle title,Context context) throws Exception
-    {
+    public static boolean isShield(NewsText text,Context context) throws Exception
+    {/*
         List<String> shieldwords=getShieldWords(context);
-        File file = new File(context.getFilesDir(), newsTextfile);
-        Scanner scanf=new Scanner(new FileInputStream(file));
-         while (scanf.hasNext())
-        {
-            NewsText text=JasonClass.StringtoJson(scanf.nextLine(),NewsText.class);
-            int n=text.seggedPListOfContent.size();
-            int m=shieldwords.size();
-            for (int i=0;i<n;i++)
-                for (int j=0;j<m;j++)
-                    if (shieldwords.get(j).equals(text.seggedPListOfContent.get(i)))
-                    {
-                        scanf.close();
-                        return true;
-                    }
-        }
-
-        scanf.close();
+        int n=text.seggedPListOfContent.size();
+        int m=shieldwords.size();
+        for (int i=0;i<n;i++)
+            for (int j=0;j<m;j++)
+                if (shieldwords.get(j).equals(text.seggedPListOfContent.get(i)))
+                    return true;*/
         return false;
     }
     public static  NewsTitle findTitle(int page,int pagesize,Context context) throws Exception
