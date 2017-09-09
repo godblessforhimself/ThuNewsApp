@@ -32,6 +32,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".uiTestActivity"></activity>
+        <activity android:name=".sideMenuTestActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>
