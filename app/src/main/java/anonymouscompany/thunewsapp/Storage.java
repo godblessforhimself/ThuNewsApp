@@ -17,22 +17,9 @@ import java.util.Scanner;
 
 public class Storage
 {
-    private static String newsTitlefile="newsTitlefile.txt";
     private static String newsTextfile="newsTextfile.txt";
     private static String collectionfile="collectionfile.txt";
     private static String shieldwordsfile="shieldwords.txt";
-    public static void addTitleFile(NewsTitle title,Context context)
-    {
-        try {
-            File file = new File(context.getFilesDir(), newsTitlefile);
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
-            out.write(JasonClass.JsontoString(title) + "\n");
-            out.close();
-        }catch (Exception e)
-        {
-
-        }
-    }
     public static void addTextFile(NewsText text,Context context)
     {
         try
@@ -46,7 +33,8 @@ public class Storage
 
         }
     }
-    public static void addCollectionFile(NewsTitle title,Context context) {
+    public static void addCollectionFile(NewsTitle title,Context context)
+    {
         File file = new File(context.getFilesDir(), collectionfile);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
@@ -63,10 +51,12 @@ public class Storage
     {
         List<NewsTitle> list=findCollectionNews(context);
         File file = new File(context.getFilesDir(), collectionfile);
+        System.out.println(title.list.get(0).news_ID);
+        System.out.println(list.get(0).list.get(0).news_ID);
+        System.out.println(list.get(1).list.get(0).news_ID);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
             for (int i=0;i<list.size();i++)
-
                 if (!list.get(i).list.get(0).news_ID.equals(title.list.get(0).news_ID))
                     out.write(JasonClass.JsontoString(list.get(i)) + "\n");
             out.close();
@@ -130,23 +120,6 @@ public class Storage
                 if (shieldwords.get(j).equals(text.seggedPListOfContent.get(i)))
                     return true;*/
         return false;
-    }
-    public static  NewsTitle findTitle(int page,int pagesize,Context context) throws Exception
-    {
-        File file = new File(context.getFilesDir(), newsTitlefile);
-        Scanner scanf=new Scanner(new FileInputStream(file));
-        while (scanf.hasNext())
-        {
-            String str=scanf.nextLine();
-            NewsTitle title=JasonClass.StringtoJson(str,NewsTitle.class);
-            if (title.pageNo==page&&title.pageSize==pagesize)
-            {
-                scanf.close();
-                return title;
-            }
-        }
-        scanf.close();
-        return null;
     }
     public static  NewsText findText(String newsid,Context context) throws Exception
     {
