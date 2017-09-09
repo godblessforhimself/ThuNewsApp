@@ -38,5 +38,18 @@ public class ReversedNews //连接服务器
         }
         return result;
     }
+    static public String getReversedSearchNews(String keyword) throws IOException
+    {
+        URL website = new URL("http://166.111.68.66:2042/news/action/query/search?keyword="+keyword);
+        HttpURLConnection con = (HttpURLConnection)website.openConnection();
+        InputStreamReader in = new InputStreamReader(con.getInputStream(),"utf-8");
+        BufferedReader buffer = new BufferedReader(in);
+        String response,result = "";
+        while ((response = buffer.readLine())!=null)
+        {
+            result += response;
+        }
+        return result;
+    }
 }
 

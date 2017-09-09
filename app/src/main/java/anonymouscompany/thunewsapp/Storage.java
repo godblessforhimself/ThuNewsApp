@@ -30,7 +30,6 @@ public class Storage
             out.close();
         } catch (Exception e)
         {
-
         }
     }
     public static void addCollectionFile(NewsTitle title,Context context)
@@ -51,9 +50,6 @@ public class Storage
     {
         List<NewsTitle> list=findCollectionNews(context);
         File file = new File(context.getFilesDir(), collectionfile);
-        System.out.println(title.list.get(0).news_ID);
-        System.out.println(list.get(0).list.get(0).news_ID);
-        System.out.println(list.get(1).list.get(0).news_ID);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
             for (int i=0;i<list.size();i++)

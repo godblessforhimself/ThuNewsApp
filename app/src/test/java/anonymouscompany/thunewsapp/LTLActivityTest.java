@@ -28,16 +28,16 @@ public class LTLActivityTest
     {
         MainActivity mainActivity = Robolectric.setupActivity(MainActivity.class);
         BackendInterface inter=new BackendInter();
-        try {
-            NewsTitle title = inter.getNewsTitle(1, 10, mainActivity);
-            System.out.println(title.list.get(0).news_ID);
-            inter.addCollectionNews(title,mainActivity);
-            title = inter.getNewsTitle(2, 10, mainActivity);
-            inter.addCollectionNews(title,mainActivity);
-            title = inter.getNewsTitle(1, 10, mainActivity);
-            inter.delCollectionNews(title,mainActivity);
+        try
+        {
+            NewsText text=inter.getNewsText("201608090432c815a85453c34d8ca43a591258701e9b",mainActivity);
+            inter.addCollectionNews(text,mainActivity);
+            text=inter.getNewsText("201608100421f2d8cf63b03d431eb847d4b3e7af8f24",mainActivity);
+            inter.addCollectionNews(text,mainActivity);
+            text=inter.getNewsText("201608090432c815a85453c34d8ca43a591258701e9b",mainActivity);
+            inter.delCollectionNews(text,mainActivity);
             List<NewsTitle> list=inter.getCollectionNews(mainActivity);
-            System.out.println(list.size());
+            System.out.println(list.get(0).list.get(0).news_ID);
         }catch (Exception e)
         {
             System.out.print("No\n");
