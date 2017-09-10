@@ -1,7 +1,9 @@
 package anonymouscompany.thunewsapp;
 
 
-import android.content.Context;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,207 +13,148 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.swipe.SimpleSwipeListener;
-import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
-import com.daimajia.swipe.util.Attributes;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import static android.app.PendingIntent.getActivity;
-
+import java.util.List;
 
 public class uiTestActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private List<NewsTitle.MyList> mNews;
+    private int newsNum, currentPage,pageSize;
+    private HomeAdapter mAdapter;
+    private void showTip(String s)
+    {
+        Toast.makeText(uiTestActivity.this,s, Toast.LENGTH_SHORT).show();
+    }
+    public void addNews()
+    {
+        new Thread(netWorkTask).start();
+    }
+    public void init()
+    {
+        mNews = new ArrayList<NewsTitle.MyList>();
+        newsNum = 0;
+        currentPage = 1;
+        pageSize = 10;
+    }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mNews.addAll((List) msg.getData().getParcelableArrayList("news"));
+            newsNum = mNews.size();
+            currentPage ++;
+            mAdapter.init(mNews);
+            showTip("News fetch" + newsNum);
+            mAdapter.notifyDataSetChanged();
+        }
+    };
+    Runnable netWorkTask = new Runnable() {
+        @Override
+        public void run() {
+            BackendInter news = new BackendInter();
+            Message msg = new Message();
+            Bundle data = new Bundle();
+            List<NewsTitle.MyList> e;
+            try{
+                e = news.getNewsTitle(currentPage,pageSize,uiTestActivity.this).list;
+                data.putParcelableArrayList("news",(ArrayList)e);
+                msg.setData(data);
+                handler.sendMessage(msg);
+            } catch (Exception ex)
+            {
+                Log.d("exception",ex.toString());
+            }
 
-    private ArrayList<String> mDataSet;
-
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
         setContentView(R.layout.ui_test);
         setTitle("uiTestActivity");
         recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
-     /***   SwipeLayout swipeLayout =  (SwipeLayout)findViewById(R.id.swipe0);
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, findViewById(R.id.bottom_wap));
-        swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-            @Override
-            public void onClose(SwipeLayout layout) {
-                //when the SurfaceView totally cover the BottomView.
-            }
-
-            @Override
-            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-                //you are swiping.
-            }
-
-            @Override
-            public void onStartOpen(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onOpen(SwipeLayout layout) {
-                //when the BottomView totally show.
-            }
-
-            @Override
-            public void onStartClose(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                //when user's hand released.
-            }
-        });
-      */
-        // Layout Managers:
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Item Decorator:
-        //recyclerView.addItemDecoration(new DividerItemDecoration(R.drawable.divider));
-       // recyclerView.setItemAnimator(new FadeInLeftAnimator());
-
-        // Adapter:
-        String[] adapterData = new String[]{"Alabama", "Alaska", "Arizona", "Arkansas", "California",
-                "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois",
-                "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
-                "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-                "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
-                "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
-        mDataSet = new ArrayList<String>(Arrays.asList(adapterData));
-      /*  mAdapter = new RecyclerViewAdapter(this, mDataSet);
-        ((RecyclerViewAdapter) mAdapter).setMode(Attributes.Mode.Single);*/
+        recyclerView.setItemAnimator(new FadeInLeftAnimator());
         mAdapter = new HomeAdapter();
         recyclerView.setAdapter(mAdapter);
+        Button add = (Button)findViewById(R.id.add_button);
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNews();
+            }
+        });
+        Button delete = (Button)findViewById(R.id.delete_button);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
     class mViewHolder extends RecyclerView.ViewHolder
     {
-        TextView tv;
+        TextView title,tag,author,time,intro,index;
+        ImageView img;
         public mViewHolder(View itemView) {
             super(itemView);
-            tv = itemView.findViewById(R.id.textView_0);
+            title = itemView.findViewById(R.id.newsTitle);
+            tag = itemView.findViewById(R.id.newsTag);
+            author = itemView.findViewById(R.id.newsAuthor);
+            time = itemView.findViewById(R.id.newsTime);
+            intro = itemView.findViewById(R.id.newsInfo);
+            index = itemView.findViewById(R.id.newsIndex);
+            img = itemView.findViewById(R.id.imgres);
         }
-        public void setText(String text)
+        public void set(NewsTitle.MyList it)
         {
-            tv.setText(text);
+            title.setText(it.news_Title);
+            intro.setText("  "+it.news_Intro);
+            author.setText(it.news_Author);
+            tag.setText(it.newsClassTag);
+            time.setText(it.news_Time);
+            //holder.img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
         }
     }
     class HomeAdapter extends RecyclerView.Adapter<mViewHolder>
     {
+        private int _count = 0;
+        private List<NewsTitle.MyList> _list;
+
+        public void init(List<NewsTitle.MyList> e)
+        {
+            _count = e.size();
+            _list = e;
+        }
         @Override
         public mViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
             LayoutInflater layoutInflater = LayoutInflater.from(uiTestActivity.this);
             View view = layoutInflater.inflate(R.layout.plain_recycler,parent,false);
-            Log.d("Tag","parent");
             return new mViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(mViewHolder holder, int position) {
-            holder.setText(Integer.toString(position));
+            NewsTitle.MyList it = _list.get(position);
+            holder.set(it);
+            holder.index.setText("index:"+position);
         }
+
 
 
         @Override
         public int getItemCount() {
-            return 15;
+            return _count;
         }
-    }
-}
-
-class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder>
-{
-
-    public static class SimpleViewHolder extends RecyclerView.ViewHolder {
-        SwipeLayout swipeLayout;
-        TextView textViewPos;
-        TextView textViewData;
-        Button buttonDelete;
-
-        public SimpleViewHolder(View itemView) {
-            super(itemView);
-            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
-            textViewPos = (TextView) itemView.findViewById(R.id.position);
-            textViewData = (TextView) itemView.findViewById(R.id.text_data);
-            buttonDelete = (Button) itemView.findViewById(R.id.delete);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(getClass().getSimpleName(), "onItemSelected: " + textViewData.getText().toString());
-                    Toast.makeText(view.getContext(), "onItemSelected: " + textViewData.getText().toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    private Context mContext;
-    private ArrayList<String> mDataset;
-
-    //protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
-
-    public RecyclerViewAdapter(Context context, ArrayList<String> objects) {
-        this.mContext = context;
-        this.mDataset = objects;
-    }
-
-    @Override
-    public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
-        return new SimpleViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
-        String item = mDataset.get(position);
-        viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        viewHolder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
-            @Override
-            public void onOpen(SwipeLayout layout) {
-                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
-            }
-        });
-        viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
-            @Override
-            public void onDoubleClick(SwipeLayout layout, boolean surface) {
-                Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
-            }
-        });
-        viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                mDataset.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, mDataset.size());
-                mItemManger.closeAllItems();
-                Toast.makeText(view.getContext(), "Deleted " + viewHolder.textViewData.getText().toString() + "!", Toast.LENGTH_SHORT).show();
-            }
-        });
-        viewHolder.textViewPos.setText((position + 1) + ".");
-        viewHolder.textViewData.setText(item);
-        mItemManger.bindView(viewHolder.itemView, position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataset.size();
-    }
-
-    @Override
-    public int getSwipeLayoutResourceId(int position) {
-        return R.id.swipe;
     }
 }

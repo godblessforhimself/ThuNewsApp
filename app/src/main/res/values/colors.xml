@@ -2,8 +2,8 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="backgroundColor">#E8E8E0</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="backgroundColor">#e8e8e0</color>
     <color name="backgroundColorPress">#DBDBD3</color>
     <color name="red">#FF3B00</color>
     <color name="red_press">#990000</color>
