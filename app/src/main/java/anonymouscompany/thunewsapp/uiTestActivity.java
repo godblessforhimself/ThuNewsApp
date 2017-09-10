@@ -17,9 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yalantis.phoenix.PullToRefreshView;
+
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class uiTestActivity extends AppCompatActivity {
     private List<NewsTitle.MyList> mNews;
     private int newsNum, currentPage,pageSize;
     private HomeAdapter mAdapter;
+    private PullToRefreshView mPullToRefreshView;
+    private View mheader,mfooter;
     private void showTip(String s)
     {
         Toast.makeText(uiTestActivity.this,s, Toast.LENGTH_SHORT).show();
@@ -42,6 +45,10 @@ public class uiTestActivity extends AppCompatActivity {
         newsNum = 0;
         currentPage = 1;
         pageSize = 10;
+        mheader = LayoutInflater.from(this).inflate(R.layout.recyclerview_header,null,false);
+
+        mfooter = LayoutInflater.from(this).inflate(R.layout.recyclerview_footer,null,false);
+        Log.d("EMPTY","mheader" + ((mheader == null) ? "is empty" : " not empty"));
     }
     Handler handler = new Handler() {
         @Override
@@ -77,16 +84,41 @@ public class uiTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        init();
+
         setContentView(R.layout.ui_test);
+        init();
         setTitle("uiTestActivity");
         recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && !recyclerView.canScrollVertically(1))
+                {
+                    addNews();
+                    showTip("loading more news");
+                }
+            }
+        });
         mAdapter = new HomeAdapter();
         recyclerView.setAdapter(mAdapter);
         Button add = (Button)findViewById(R.id.add_button);
 
+        mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
+        mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPullToRefreshView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPullToRefreshView.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +130,7 @@ public class uiTestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mAdapter.notifyDataSetChanged();
+
             }
         });
     }
@@ -107,6 +140,8 @@ public class uiTestActivity extends AppCompatActivity {
         ImageView img;
         public mViewHolder(View itemView) {
             super(itemView);
+            if (itemView == mheader || itemView == mfooter)
+                return;
             title = itemView.findViewById(R.id.newsTitle);
             tag = itemView.findViewById(R.id.newsTag);
             author = itemView.findViewById(R.id.newsAuthor);
@@ -115,29 +150,53 @@ public class uiTestActivity extends AppCompatActivity {
             index = itemView.findViewById(R.id.newsIndex);
             img = itemView.findViewById(R.id.imgres);
         }
+
         public void set(NewsTitle.MyList it)
         {
+            if (itemView == mheader || itemView == mfooter)
+                return;
             title.setText(it.news_Title);
             intro.setText("  "+it.news_Intro);
             author.setText(it.news_Author);
             tag.setText(it.newsClassTag);
             time.setText(it.news_Time);
-            //holder.img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
+            //img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
         }
     }
     class HomeAdapter extends RecyclerView.Adapter<mViewHolder>
     {
+        public static final int HEAD = 0;
+        public static final int FOOT = 1;
+        public static final int MIDDLE = 2;
         private int _count = 0;
         private List<NewsTitle.MyList> _list;
-
         public void init(List<NewsTitle.MyList> e)
         {
             _count = e.size();
             _list = e;
         }
         @Override
-        public mViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public int getItemViewType(int position)
+        {
 
+           if (position == 0)
+               return HEAD;
+            if (position == _count + 1)
+                return FOOT;
+            return MIDDLE;
+        }
+        @Override
+        public mViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            switch (viewType)
+            {
+                case HEAD:
+                    return new mViewHolder(mheader);
+                case FOOT:
+                    return new mViewHolder(mfooter);
+                case MIDDLE:
+                    break;
+            }
             LayoutInflater layoutInflater = LayoutInflater.from(uiTestActivity.this);
             View view = layoutInflater.inflate(R.layout.plain_recycler,parent,false);
             return new mViewHolder(view);
@@ -145,7 +204,9 @@ public class uiTestActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(mViewHolder holder, int position) {
-            NewsTitle.MyList it = _list.get(position);
+            if (position == 0 || position == _count + 1 || _count == 0)
+                return;
+            NewsTitle.MyList it = _list.get(position - 1);
             holder.set(it);
             holder.index.setText("index:"+position);
         }
@@ -154,7 +215,7 @@ public class uiTestActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return _count;
+            return _count + 2;
         }
     }
 }
