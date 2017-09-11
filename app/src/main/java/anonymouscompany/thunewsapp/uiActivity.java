@@ -100,7 +100,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             Bundle data = new Bundle();
             List<NewsTitle.MyList> e;
             try{
-                e = news.getNewsTitle(currentPage,pageSize,uiActivity.this).list;
+                e = news.getNewsTitle(currentPage,pageSize,0,uiActivity.this).list;
                 data.putParcelableArrayList("news",(ArrayList)e);
                 msg.setData(data);
                 handler.sendMessage(msg);
