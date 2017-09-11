@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/recyclerview_header"
-    android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:background="@drawable/sky"
+    android:layout_width="400dp"
+    android:layout_height="40dp"
+    android:background="@color/red"
+    android:gravity="center"
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/hand"
+        android:layout_width="400dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:text="HEADER"
         android:textAlignment="center"

@@ -45,6 +45,7 @@
         android:id="@+id/searchview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <com.yalantis.phoenix.PullToRefreshView
         android:id="@+id/pull_to_refresh"
         android:layout_width="match_parent"
@@ -60,8 +61,10 @@
             android:paddingRight="3dp"
             android:paddingStart="3dp"
             android:paddingTop="3dp">
+
         </android.support.v7.widget.RecyclerView>
     </com.yalantis.phoenix.PullToRefreshView>
+
 </LinearLayout>
 
 

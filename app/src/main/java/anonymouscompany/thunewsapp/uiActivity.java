@@ -30,6 +30,7 @@ import android.content.Intent;
 
 import java.io.*;
 
+import com.bumptech.glide.Glide;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
@@ -45,7 +46,10 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     private HomeAdapter mAdapter;
     private PullToRefreshView mPullToRefreshView;
     private View mheader,mfooter;
-    private int refreshoradd = 0;
+    private int refreshoradd = REFRESH;
+    private static final int REFRESH = 1, ADD = 0;
+    //是否正在网络通信
+    private boolean isLoading = false;
     private SearchView mSearchView = null;
     private void showTip(String s)
     {
@@ -53,12 +57,16 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
     private void refresh()
     {
-        refreshoradd = 1;
+        refreshoradd = REFRESH;
+        newsNum = 0;
+        currentPage = 1;
+        showTip("Refresh, you should set some view changed...");
         new Thread(netWorkTask).start();
     }
     public void addNews()
     {
-        refreshoradd = 0;
+        refreshoradd = ADD;
+        showTip("addNews, you should set some view changed...");
         new Thread(netWorkTask).start();
     }
     public void init()
@@ -68,39 +76,35 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         currentPage = 1;
         pageSize = 10;
         mheader = LayoutInflater.from(this).inflate(R.layout.recyclerview_header,null,false);
-
         mfooter = LayoutInflater.from(this).inflate(R.layout.recyclerview_footer,null,false);
-
     }
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (refreshoradd == 0) {
+            if (refreshoradd == ADD) {
                 mNews.addAll((List) msg.getData().getParcelableArrayList("news"));
-                newsNum = mNews.size();
-                currentPage ++;
-                mAdapter.init(mNews);
-                showTip("News fetch" + newsNum);
-                mAdapter.notifyDataSetChanged();
-            } else {
-                mNews.addAll(0, (List) msg.getData().getParcelableArrayList("news"));
-                newsNum = mNews.size();
-                currentPage ++;
-                mAdapter.init(mNews);
-                showTip("News fetch" + newsNum);
-                mAdapter.notifyDataSetChanged();
             }
+            else if (refreshoradd == REFRESH){
+                mNews.addAll(0, (List) msg.getData().getParcelableArrayList("news"));
+            }
+            newsNum = mNews.size();
+            currentPage ++;
+            mAdapter.init(mNews);
+            mAdapter.notifyDataSetChanged();
+            showTip("News fetch finish, total num:" + newsNum);
         }
     };
+    //所有runnable，非主线程都不能使用showtip等改变ui的函数，替代办法写到handler handleMessage中。
+    //runnable结束调用handler更新ui
     Runnable netWorkTask = new Runnable() {
         @Override
-        public void run() {
+        public synchronized void run() {
             Message msg = new Message();
             Bundle data = new Bundle();
             List<NewsTitle.MyList> e;
             try{
-                e = news.getNewsTitle(currentPage,pageSize,0,uiActivity.this).list;
+                e = news.getNewsTitle(currentPage, pageSize, 0, uiActivity.this).list;
                 data.putParcelableArrayList("news",(ArrayList)e);
                 msg.setData(data);
                 handler.sendMessage(msg);
@@ -114,13 +118,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.ui_main);
         init();
         recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
-
+        //上拉加载更多
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -128,22 +131,22 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 if (dy > 0 && !recyclerView.canScrollVertically(1))
                 {
                     addNews();
-                    showTip("loading more news");
                 }
             }
         });
         mAdapter = new HomeAdapter();
         recyclerView.setAdapter(mAdapter);
-        addNews();
-
         mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
         mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                //调用刷新
+                refresh();
                 mPullToRefreshView.postDelayed(new Runnable() {
                     @Override
+                    //刷新结束调用run
                     public void run() {
-                        refresh();
+                        showTip("Refresh finish...");
                         mPullToRefreshView.setRefreshing(false);
                     }
                 }, 1000);
@@ -158,7 +161,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         } catch (Exception ex) {
             showTip(ex.toString());
         }
-
+        addNews();
     }
 
     //用户输入字符时激发该方法
@@ -244,11 +247,24 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 intro.setTextColor(Color.BLACK);
             }
             title.setText(it.news_Title);
-            intro.setText("  "+it.news_Intro);
+            intro.setText(it.news_Intro);
             author.setText(it.news_Author);
             tag.setText(it.newsClassTag);
             time.setText(it.news_Time);
-            img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
+            //新闻列表图片加载
+            if (it.news_Pictures != null && news.getPicturesDisplay(uiActivity.this) == 0)
+            {
+                String[] pictures = it.news_Pictures.split(";");
+                //显示第一张
+                Glide.with(uiActivity.this)
+                        .load(pictures[0])
+                        .skipMemoryCache(true)
+                        .override(300, 200)
+                        .fitCenter()
+                        .dontAnimate()
+                        .placeholder(R.drawable.magnifier)
+                        .into(img);
+            }
             id = it.news_ID;
         }
 
@@ -277,14 +293,14 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             }
         };
     }
-    class HomeAdapter extends RecyclerView.Adapter<mViewHolder>
+     private class HomeAdapter extends RecyclerView.Adapter<mViewHolder>
     {
-        public static final int HEAD = 0;
-        public static final int FOOT = 1;
-        public static final int MIDDLE = 2;
+        static final int HEAD = 0;
+        static final int FOOT = 1;
+        static final int MIDDLE = 2;
         private int _count = 0;
         private List<NewsTitle.MyList> _list;
-        public void init(List<NewsTitle.MyList> e)
+        void init(List<NewsTitle.MyList> e)
         {
             _count = e.size();
             _list = e;
