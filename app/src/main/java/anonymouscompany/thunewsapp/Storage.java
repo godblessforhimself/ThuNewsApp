@@ -169,29 +169,5 @@ public class Storage
         scanf.close();
         return title;
     }
-    /*public static List<Keyword> getKeyWords(Context context)
-    {
-        HashMap<String,Double> hashmap=new HashMap<String,Double>();
-        File file = new File(context.getFilesDir(), newsTextfile);
-        try
-        {
-            Scanner scanf=new Scanner(new FileInputStream(file));
-            while (scanf.hasNext())
-            {
-                String str=scanf.nextLine();
-                NewsText text=JasonClass.StringtoJson(str,NewsText.class);
-                int len=200;
-                if (text.Keywords.size()<len) len=text.Keywords.size()
-                for (int i=0;i<len;i++)
-                {
-                    double sorce=hashmap.get(text.Keywords.get(i));
-                    sorce+=text.
-                }
-            }
-            scanf.close();
-        }catch(Exception e)
-        {
 
-        }
-    }*/
 }

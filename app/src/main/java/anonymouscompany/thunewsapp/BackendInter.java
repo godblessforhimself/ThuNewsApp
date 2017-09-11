@@ -2,6 +2,9 @@ package anonymouscompany.thunewsapp;
 
 import android.content.Context;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -91,6 +94,12 @@ public class BackendInter implements  BackendInterface
     {
         if (!ConfigI.load(text.news_ID,context).equals("0")) return;
         ConfigI.Save(text.news_ID,"1",context);
+        for (int i=0;i<text.Keywords.size();i++)
+        {
+
+            double sorce=text.Keywords.get(i).score+Double.parseDouble(ConfigI.load(text.Keywords.get(i).word,context));
+            ConfigI.Save(text.Keywords.get(i).word,Double.toString(sorce),context);
+        }
         Storage.addTextFile(text,context);
      }
     public boolean isviewed(String news_ID,Context context)
@@ -114,8 +123,27 @@ public class BackendInter implements  BackendInterface
     }
     public NewsTitle likeNewsTitel(Context context) throws Exception
     {
-       // List<Keyword> keywords=Storage.getKeyWords();
-        return getNewsTitle(1,10,1,context);
+        NewsTitle title=getNewsTitle(2,100,0,context);
+        for (int i=0;i<title.list.size();i++)
+        {
+            NewsText text=getNewsText(title.list.get(i).news_ID,context);
+            double sorce=0;
+            int len=20;
+            if (text.Keywords.size()<len) len=text.Keywords.size();
+            for (int j=0;j<len;j++)
+            {
+                sorce+=Double.parseDouble(ConfigI.load(text.Keywords.get(j).word,context));
+            }
+            title.list.get(i).score=sorce;
+        }
+        Collections.sort(title.list,new Comparator<NewsTitle.MyList>()
+        {
+            public int compare(NewsTitle.MyList a, NewsTitle.MyList b)
+            {
+                return (int) (a.score - b.score);
+            }
+        });
+        return title;
     }
     public void clearAllInfo(Context context)
     {
