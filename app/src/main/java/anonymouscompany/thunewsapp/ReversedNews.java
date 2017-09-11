@@ -40,9 +40,14 @@ public class ReversedNews //连接服务器
         }
         return result;
     }
-    static public String getReversedSearchNews(String keyword) throws IOException
+    static public String getReversedSearchNews(String keyword,int page, int pagesize,int catagory) throws IOException
     {
-        URL website = new URL("http://166.111.68.66:2042/news/action/query/search?keyword="+keyword);
+        String str="http://166.111.68.66:2042/news/action/query/search?keyword="+keyword;
+        if (page!=0&&pagesize!=0) str+="&pageNo="+page+"&pageSize="+pagesize;
+        if (catagory!=0) str+="&catagory="+catagory;
+        System.out.println(str);
+
+        URL website = new URL(str);
         HttpURLConnection con = (HttpURLConnection)website.openConnection();
         InputStreamReader in = new InputStreamReader(con.getInputStream(),"utf-8");
         BufferedReader buffer = new BufferedReader(in);

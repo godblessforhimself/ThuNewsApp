@@ -23,10 +23,9 @@ public interface BackendInterface
     int getPicturesDisplay(Context context);//获得图片配置信息
     void viewed(NewsText text, Context context);//已看过新闻
     boolean isviewed(String news_ID,Context context);//是否看过
-    NewsTitle searchNewsTitel(String keyword,Context context) throws Exception;//搜索新闻
-    NewsTitle likeNewsTitel(Context context) throws Exception;//推荐新闻,,,有待完善
+    NewsTitle searchNewsTitel(String keyword,int page, int pagesize, int category,Context context) throws Exception;//搜索新闻
+    NewsTitle likeNewsTitel(Context context) throws Exception;//推荐新闻
     void clearAllInfo(Context context);//清空缓存
-    void getNewsPictures();//获得图片
     void setNight(int type, Context context);//保持夜间模式配置信息
     int getNight(Context context);//获得是否为夜间模式
 }
