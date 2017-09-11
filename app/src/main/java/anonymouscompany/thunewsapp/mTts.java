@@ -1,7 +1,9 @@
 package anonymouscompany.thunewsapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.iflytek.cloud.ErrorCode;
@@ -18,7 +20,7 @@ import com.iflytek.cloud.SynthesizerListener;
 interface mTtsInterface
 {
     // TTS的监听回调不开放(监听初始化和播放的两个类的接口不开放，在mTTS中直接实现)
-    void initEngine(Context context, String text);//初始化
+    void initEngine(Activity context, String text);//初始化
     int startSpeaking();//开始合成语音并开始播放
     void stopSpeaking();//强制结束播放，不可恢复
     void pauseSpeaking();//暂停播放，可恢复
@@ -108,14 +110,16 @@ public class mTts implements mTtsInterface{
     };
 
     @Override
-    public void initEngine(Context context,String text) {
+    public void initEngine(Activity context,String text) {
         mcontext = context;
         SpeechUtility.createUtility(context,SpeechConstant.APPID +"=59a77b75");
-        mTts = SpeechSynthesizer.createSynthesizer(context, mListener);
+        mTts = SpeechSynthesizer.createSynthesizer(mcontext, mListener);
         mText = text;
+        Log.d("TTs","mTts " + (mTts == null ? "is null" : "not null"));
         mTts.setParameter(SpeechConstant.VOICE_NAME,"xiaoyan");
         mTts.setParameter(SpeechConstant.VOLUME,"50");
         mTts.setParameter(SpeechConstant.SPEED,"50");
+
     }
 
     @Override

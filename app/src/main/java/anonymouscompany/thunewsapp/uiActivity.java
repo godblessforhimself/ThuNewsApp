@@ -70,7 +70,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         mheader = LayoutInflater.from(this).inflate(R.layout.recyclerview_header,null,false);
 
         mfooter = LayoutInflater.from(this).inflate(R.layout.recyclerview_footer,null,false);
-        Log.d("EMPTY","mheader" + ((mheader == null) ? "is empty" : " not empty"));
+
     }
     Handler handler = new Handler() {
         @Override
@@ -261,8 +261,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 title.setTextColor(Color.BLACK);
                 intro.setTextColor(Color.BLACK);
             }
-
-            new Thread(opennews).start();
+            try {
+                news.viewed(news.getNewsText(id, uiActivity.this), uiActivity.this);
+                Intent intent = new Intent(uiActivity.this, NewsActivity.class);
+                intent.putExtra("NewsText", id);
+                startActivity(intent);
+            } catch (Exception ex) {
+                Log.d("exception",ex.toString());
+            }
+           // new Thread(opennews).start();
         }
 
         Runnable opennews = new Runnable() {

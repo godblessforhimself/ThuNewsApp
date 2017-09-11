@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,46 +37,32 @@ public class NewsActivity extends AppCompatActivity {
     Toolbar toolbar = null;
     ImageButton share = null;
     Switch switchbutton = null;
-
+    ImageView tts;
     TextView title,tag,author,time,text;
     ImageView img;
     private void showTip(String s)
     {
         Toast.makeText(NewsActivity.this,s, Toast.LENGTH_LONG).show();
     }
-    Handler handler = new Handler()  {
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    if (msg.what == 0) {
-                        showTip((String)msg.obj);
-                    } else {
-                        toolbar.setTitle(news.news_Title);
-                        setSupportActionBar(toolbar);
-                        title = (TextView) findViewById(R.id.newsTitle2);
-                        tag = (TextView) findViewById(R.id.newsTag2);
-                        author = (TextView) findViewById(R.id.newsAuthor2);
-                        time = (TextView) findViewById(R.id.newsTime2);
-                        text = (EditText) findViewById(R.id.newsText);
-                        img = (ImageView) findViewById(R.id.imgres2);
 
-                        text.setText(news.news_Content);
-                        tag.setText(news.newsClassTag);
-                        time.setText(news.news_Time);
-                        author.setText(news.news_Author);
-                        title.setText(news.news_Title);
-                        if (!news.news_Pictures.equals("")) {
-
-                        }
-                    }
-                }
-            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        tts = (ImageView)findViewById(R.id.tts_button);
+        tts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mTts mtts = new mTts();
+                mtts.initEngine(NewsActivity.this,news.news_Content);
+                mtts.startSpeaking();
+
+            }
+        });
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -105,7 +93,10 @@ public class NewsActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mWbshare wbshareInstance = new mWbshare();
+                wbshareInstance.init(NewsActivity.this);
+                wbshareInstance.setShareInfo(news);
+                wbshareInstance.shareMessage();
             }
         });
 
@@ -133,4 +124,31 @@ public class NewsActivity extends AppCompatActivity {
 
 
     }
+    Handler handler = new Handler()  {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                showTip((String)msg.obj);
+            } else {
+                toolbar.setTitle(news.news_Title);
+                setSupportActionBar(toolbar);
+                title = (TextView) findViewById(R.id.newsTitle2);
+                tag = (TextView) findViewById(R.id.newsTag2);
+                author = (TextView) findViewById(R.id.newsAuthor2);
+                time = (TextView) findViewById(R.id.newsTime2);
+                text = (EditText) findViewById(R.id.newsText);
+                img = (ImageView) findViewById(R.id.imgres2);
+
+                text.setText(news.news_Content);
+                tag.setText(news.newsClassTag);
+                time.setText(news.news_Time);
+                author.setText(news.news_Author);
+                title.setText(news.news_Title);
+                if (!news.news_Pictures.equals("")) {
+
+                }
+            }
+        }
+    };
 }

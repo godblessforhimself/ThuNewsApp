@@ -3,17 +3,22 @@ package anonymouscompany.thunewsapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.sina.weibo.sdk.WbSdk;
 import com.sina.weibo.sdk.api.BaseMediaObject;
 import com.sina.weibo.sdk.api.MultiImageObject;
 import com.sina.weibo.sdk.api.TextObject;
+import com.sina.weibo.sdk.api.WebpageObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.share.WbShareCallback;
 import com.sina.weibo.sdk.share.WbShareHandler;
+import com.sina.weibo.sdk.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -23,7 +28,8 @@ import java.util.ArrayList;
 interface mWbshareInterface
 {
     //微博分享的回调函数由mWbshare类实现，不开放接口，要改在mWbshare类中修改。
-    void init(Context context);//初始化
+    void init(Activity context);//初始化
+    void setShareInfo(NewsText news);
     void setText(String text);//设置分享的文字
     void setUrl(String url);//设置分享的网址url
     void setImgs(ArrayList<Uri> pictures);//设置分享的图片，必须是本地图片，uri是资源标识符，通过图片地址转换
@@ -38,11 +44,21 @@ public class mWbshare implements mWbshareInterface,WbShareCallback
     private WbShareHandler shareHandler;
 
     @Override
-    public void init(Context context) {
+    public void init(Activity context) {
         mContext = context;
         WbSdk.install(context, new AuthInfo(context,"3261203981","http://www.baidu.com",""));
-        shareHandler = new WbShareHandler((Activity)context);
-        shareHandler.registerApp();
+        shareHandler = new WbShareHandler(context);
+        boolean reg = shareHandler.registerApp();
+        showTip("register = " + (reg ? "true" : "false"));
+    }
+
+    @Override
+    public void setShareInfo(NewsText news)
+    {
+        String text = "标题:" + news.news_Title + " 简介:" + news.news_Content;
+        setText(text);
+        String url = news.news_URL;
+        setUrl(url);
     }
 
     @Override
@@ -59,43 +75,37 @@ public class mWbshare implements mWbshareInterface,WbShareCallback
     public void setImgs(ArrayList<Uri> pictures) {
         mImgs = pictures;
     }
-
+    private WebpageObject getWebpageObj() {
+        WebpageObject mediaObject = new WebpageObject();
+        mediaObject.identify = Utility.generateGUID();
+        mediaObject.title ="mediaObject title";
+        mediaObject.description = "描述";
+       // Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bird);
+        // 设置 Bitmap 类型的图片到视频对象里         设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
+        //mediaObject.setThumbImage(bitmap);
+        mediaObject.actionUrl = mUrl;
+        mediaObject.defaultText = "Webpage 默认文案";
+        return mediaObject;
+    }
     @Override
     public void shareMessage() {
         WeiboMultiMessage weiboMessage = new WeiboMultiMessage();
         if (mText != null)
         {
             TextObject textObject = new TextObject();
-            textObject.text = mText;
+            textObject.text = mText.substring(0,100)+"...";
             textObject.title = "title";
             weiboMessage.textObject = textObject;
         }
-        if(mUrl != null)
+        if (mUrl != null)
         {
-            BaseMediaObject mediaObject = new BaseMediaObject() {
-                @Override
-                public int getObjType() {
-                    return 0;
-                }
-
-                @Override
-                protected BaseMediaObject toExtraMediaObject(String s) {
-                    return null;
-                }
-
-                @Override
-                protected String toExtraMediaString() {
-                    return null;
-                }
-            };
-            mediaObject.actionUrl = mUrl;
-            weiboMessage.mediaObject = mediaObject;
+            weiboMessage.mediaObject = getWebpageObj();
         }
         if (mImgs != null)
         {
-            MultiImageObject multiImageObject = new MultiImageObject();
-            multiImageObject.setImageList(mImgs);
-            weiboMessage.multiImageObject = multiImageObject;
+            MultiImageObject imgObj = new MultiImageObject();
+            imgObj.setImageList(mImgs);
+            weiboMessage.multiImageObject = imgObj;
         }
         shareHandler.shareMessage(weiboMessage, false);
     }
