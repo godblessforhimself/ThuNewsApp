@@ -78,16 +78,18 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         pageSize = 10;
         mheader = LayoutInflater.from(this).inflate(R.layout.recyclerview_header,null,false);
         mfooter = LayoutInflater.from(this).inflate(R.layout.recyclerview_footer,null,false);
+        recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
+        mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
     }
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (refreshoradd == ADD) {
-                mNews.addAll((List) msg.getData().getParcelableArrayList("news"));
+                mNews.addAll((ArrayList) msg.getData().getParcelableArrayList("news"));
             }
             else if (refreshoradd == REFRESH){
-                mNews.addAll(0, (List) msg.getData().getParcelableArrayList("news"));
+                mNews.addAll(0, (ArrayList) msg.getData().getParcelableArrayList("news"));
             }
             newsNum = mNews.size();
             currentPage ++;
@@ -100,7 +102,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     //runnable结束调用handler更新ui
     Runnable netWorkTask = new Runnable() {
         @Override
-        public synchronized void run() {
+        public void run() {
             Message msg = new Message();
             Bundle data = new Bundle();
             List<NewsTitle.MyList> e;
@@ -121,7 +123,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_main);
         init();
-        recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
         //上拉加载更多
@@ -133,11 +135,30 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 {
                     addNews();
                 }
+                if (dy * dy > 100)
+                {
+                    Glide.with(uiActivity.this).pauseRequests();
+                }
+                else
+                {
+                    Glide.with(uiActivity.this).resumeRequests();
+                }
             }
         });
         mAdapter = new HomeAdapter();
         recyclerView.setAdapter(mAdapter);
-        mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
+
+
+        news.setPicturesDisplay(0, uiActivity.this);
+        try {
+            mSearchView = (SearchView) findViewById(R.id.searchview);
+            mSearchView.setOnQueryTextListener(this);
+            mSearchView.setSubmitButtonEnabled(true);
+            mSearchView.setQueryHint("Search");
+        } catch (Exception ex) {
+            showTip(ex.toString());
+        }
+
         mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -153,15 +174,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 }, 1000);
             }
         });
-        news.setPicturesDisplay(0, uiActivity.this);
-        try {
-            mSearchView = (SearchView) findViewById(R.id.searchview);
-            mSearchView.setOnQueryTextListener(this);
-            mSearchView.setSubmitButtonEnabled(true);
-            mSearchView.setQueryHint("Search");
-        } catch (Exception ex) {
-            showTip(ex.toString());
-        }
         addNews();
     }
 
@@ -239,7 +251,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         public void set(NewsTitle.MyList it)
         {
             title.setText(it.news_Title);
-            intro.setText("  "+it.news_Intro);
+            intro.setText(it.news_Intro);
             author.setText(it.news_Author);
             tag.setText(it.newsClassTag);
             time.setText(it.news_Time);
@@ -261,17 +273,17 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             tag.setText(it.newsClassTag);
             time.setText(it.news_Time);
             //新闻列表图片加载
-            if (it.news_Pictures != null && news.getPicturesDisplay(uiActivity.this) == 0)
+            if (!it.news_Pictures.equals("") && news.getPicturesDisplay(uiActivity.this) == 0)
             {
                 String[] pictures = it.news_Pictures.split(";");
                 //显示第一张
+                if (!pictures[0].equals(""))
                 Glide.with(uiActivity.this)
                         .load(pictures[0])
-                        .skipMemoryCache(true)
                         .override(300, 200)
                         .fitCenter()
                         .dontAnimate()
-                        .placeholder(R.drawable.magnifier)
+                        .placeholder(R.drawable.ic_launcher)
                         .into(img);
             }
             id = it.news_ID;
@@ -309,6 +321,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     Message msg = new Message();
                     msg.what = 0;
                     hd.sendMessage(msg);
+                    //是不是最好在hd里startActivity?
                     startActivity(intent);
                 } catch (Exception ex) {
                     Log.d("exception",ex.toString());

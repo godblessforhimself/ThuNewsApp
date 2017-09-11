@@ -26,6 +26,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -140,14 +142,20 @@ public class NewsActivity extends AppCompatActivity {
                 text = (EditText) findViewById(R.id.newsText);
                 img = (ImageView) findViewById(R.id.imgres2);
                 switchbutton.setChecked(bi.isCollectionNews(news.news_ID, NewsActivity.this));
-
                 text.setText(news.news_Content);
                 tag.setText(news.newsClassTag);
                 time.setText(news.news_Time);
                 author.setText(news.news_Author);
                 title.setText(news.news_Title);
-                if (!news.news_Pictures.equals("")) {
 
+                if (!news.news_Pictures.equals(""))
+                {
+                    String[] pictures = news.news_Pictures.split(";");
+                    if (!pictures[0].equals(""))
+                    Glide.with(NewsActivity.this)
+                            .load(pictures[0])
+                            .placeholder(R.drawable.loading)
+                            .into(img);
                 }
             }
         }
