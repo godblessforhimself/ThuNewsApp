@@ -25,4 +25,10 @@ public class ConfigI //用户设置保持
         SharedPreferences sharedPref = context.getSharedPreferences("tony.xml",Context.MODE_PRIVATE);
         return sharedPref.getString(key,"0");
     }
+    static public void clear(Context context)
+    {
+        SharedPreferences sharedPref = context.getSharedPreferences("tony.xml",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor =sharedPref.edit();
+        editor.clear();
+    }
 }

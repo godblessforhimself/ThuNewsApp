@@ -12,9 +12,11 @@ import java.net.URL;
 
 public class ReversedNews //连接服务器
 {
-    static  public String getReversedNews(int page, int pagesize) throws IOException
+    static  public String getReversedNews(int page, int pagesize,int catagory) throws IOException
     {
-        URL website = new URL("http://166.111.68.66:2042/news/action/query/latest?pageNo="+page+"&pageSize="+pagesize);
+        String str="http://166.111.68.66:2042/news/action/query/latest?pageNo="+page+"&pageSize="+pagesize;
+        if (catagory!=0) str+="&catagory="+catagory;
+        URL website = new URL(str);
         HttpURLConnection con = (HttpURLConnection)website.openConnection();
         InputStreamReader in = new InputStreamReader(con.getInputStream(),"utf-8");
         BufferedReader buffer = new BufferedReader(in);

@@ -1,7 +1,11 @@
 package anonymouscompany.thunewsapp;
 
 import java.util.List;
-
+class Keyword
+{
+    String word;
+    double score;
+}
 public class NewsText //新闻正文
 {
    class Person

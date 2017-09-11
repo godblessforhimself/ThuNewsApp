@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.security.Key;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,6 +22,24 @@ public class Storage
     private static String newsTextfile="newsTextfile.txt";
     private static String collectionfile="collectionfile.txt";
     private static String shieldwordsfile="shieldwords.txt";
+    public static void clearAllInfo(Context context)
+    {
+        try
+        {
+            File file = new File(context.getFilesDir(), newsTextfile);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+            out.close();
+            file = new File(context.getFilesDir(), collectionfile);
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+            out.close();
+            file = new File(context.getFilesDir(), shieldwordsfile);
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+            out.close();
+            ConfigI.clear(context);
+        } catch (Exception e)
+        {
+        }
+    }
     public static void addTextFile(NewsText text,Context context)
     {
         try
@@ -43,18 +63,17 @@ public class Storage
         {
 
         }
-
-
     }
-    public static void delCollectionFile(NewsTitle title, Context context)
+    public static void delCollectionFile(String news_ID, Context context)
     {
-        List<NewsTitle> list=findCollectionNews(context);
+        NewsTitle title=findCollectionNews(context);
         File file = new File(context.getFilesDir(), collectionfile);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
-            for (int i=0;i<list.size();i++)
-                if (!list.get(i).list.get(0).news_ID.equals(title.list.get(0).news_ID))
-                    out.write(JasonClass.JsontoString(list.get(i)) + "\n");
+            for (int i=0;i<title.list.size();i++)
+                if (!title.list.get(i).news_ID.equals(news_ID))
+                    title.list.remove(i);
+            out.write(JasonClass.JsontoString(title)+"\n");
             out.close();
         }catch (Exception e)
         {
@@ -134,9 +153,9 @@ public class Storage
         scanf.close();
         return null;
     }
-    public static List<NewsTitle> findCollectionNews(Context context)
+    public static NewsTitle findCollectionNews(Context context)
     {
-        List<NewsTitle> list=new LinkedList<NewsTitle>();
+        NewsTitle title=new NewsTitle();
         File file = new File(context.getFilesDir(), collectionfile);
         Scanner scanf=null;
         try
@@ -146,9 +165,33 @@ public class Storage
         {
 
         }
-        while (scanf.hasNext()) list.add(JasonClass.StringtoJson(scanf.nextLine(),NewsTitle.class));
+        while (scanf.hasNext()) title.list.addAll(JasonClass.StringtoJson(scanf.nextLine(),NewsTitle.class).list);
         scanf.close();
-        return list;
+        return title;
     }
+    /*public static List<Keyword> getKeyWords(Context context)
+    {
+        HashMap<String,Double> hashmap=new HashMap<String,Double>();
+        File file = new File(context.getFilesDir(), newsTextfile);
+        try
+        {
+            Scanner scanf=new Scanner(new FileInputStream(file));
+            while (scanf.hasNext())
+            {
+                String str=scanf.nextLine();
+                NewsText text=JasonClass.StringtoJson(str,NewsText.class);
+                int len=200;
+                if (text.Keywords.size()<len) len=text.Keywords.size()
+                for (int i=0;i<len;i++)
+                {
+                    double sorce=hashmap.get(text.Keywords.get(i));
+                    sorce+=text.
+                }
+            }
+            scanf.close();
+        }catch(Exception e)
+        {
 
+        }
+    }*/
 }

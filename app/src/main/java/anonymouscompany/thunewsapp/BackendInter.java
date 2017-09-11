@@ -11,16 +11,18 @@ import java.util.List;
 
 public class BackendInter implements  BackendInterface
 {
-    public  NewsTitle getNewsTitle(int page, int pagesize, Context context) throws Exception
+    public  NewsTitle getNewsTitle(int page, int pagesize,int catagory, Context context) throws Exception
     {
         NewsTitle title;
-        String str=ReversedNews.getReversedNews(page,pagesize);
+        String str=ReversedNews.getReversedNews(page,pagesize,catagory);
         title=JasonClass.StringtoJson(str,NewsTitle.class);
-        NewsText text=getNewsText(title,context);
-        if(Storage.isShield(text,context))
+        for (int i=0;i<title.list.size();i++)
         {
-            Exception e=new Exception();
-            throw e;
+            NewsText text = getNewsText(title.list.get(i).news_ID, context);
+            if (Storage.isShield(text, context))
+            {
+                title.list.remove(i);
+            }
         }
         return title;
     }
@@ -47,11 +49,7 @@ public class BackendInter implements  BackendInterface
         }
         return text;
     }
-    public NewsText getNewsText(NewsTitle title,Context context) throws Exception
-    {
-        return getNewsText(title.list.get(0).news_ID,context);
-    }
-    public List<NewsTitle> getCollectionNews(Context context)
+    public NewsTitle getCollectionNews(Context context)
     {
         return Storage.findCollectionNews(context);
     }
@@ -59,12 +57,19 @@ public class BackendInter implements  BackendInterface
     {
         viewed(text,context);
         NewsTitle title=new NewsTitle(text);
+        ConfigI.Save(text.news_ID,"2",context);
         Storage.addCollectionFile(title,context);
     }
     public void delCollectionNews(NewsText text ,Context context)
     {
         NewsTitle title=new NewsTitle(text);
-        Storage.delCollectionFile(title,context);
+        ConfigI.Save(text.news_ID,"1",context);
+        Storage.delCollectionFile(text.news_ID,context);
+    }
+    public boolean isCollectionNews(String news_ID,Context context)
+    {
+        if (ConfigI.load(news_ID,context).equals("2")) return true;
+        return false;
     }
     public  void addShiledWord(String shieldword,Context context)
     {
@@ -84,26 +89,49 @@ public class BackendInter implements  BackendInterface
     }
     public void viewed(NewsText text,Context context)
     {
-        if (ConfigI.load(text.news_ID,context).equals("1")) return;
+        if (!ConfigI.load(text.news_ID,context).equals("0")) return;
         ConfigI.Save(text.news_ID,"1",context);
         Storage.addTextFile(text,context);
      }
     public boolean isviewed(String news_ID,Context context)
     {
-        if (ConfigI.load(news_ID,context).equals("1")) return true;
+        if (!ConfigI.load(news_ID,context).equals("0")) return true;
         return false;
     }
-    public List<NewsTitle> searchNewsTitel(String keyword,Context context) throws  Exception
+    public NewsTitle searchNewsTitel(String keyword,Context context) throws  Exception
     {
         String str=ReversedNews.getReversedSearchNews(keyword);
-        List<NewsTitle> list=JasonClass.StringtoJson(str,List.class);
-        List<NewsTitle> newlist=new LinkedList<NewsTitle>();
-        for (int i=0;i<list.size();i++)
+        NewsTitle title=JasonClass.StringtoJson(str,NewsTitle.class);
+        for (int i=0;i<title.list.size();i++)
         {
-                NewsText text=getNewsText(list.get(i),context);
-                if (Storage.isShield(text,context)) continue;
-                newlist.add(list.get(i));
+                NewsText text=getNewsText(title.list.get(i).news_ID,context);
+                if (Storage.isShield(text,context))
+                {
+                    title.list.remove(i);
+                }
         }
-        return newlist;
+        return title;
     }
+    public NewsTitle likeNewsTitel(Context context) throws Exception
+    {
+       // List<Keyword> keywords=Storage.getKeyWords();
+        return getNewsTitle(1,10,1,context);
+    }
+    public void clearAllInfo(Context context)
+    {
+        Storage.clearAllInfo(context);
+    }
+    public void getNewsPictures()
+    {
+
+    }
+    public void setNight(int type, Context context)
+    {
+        ConfigI.Save("NightInfo",Integer.toString(type),context);
+    }
+    public int getNight(Context context)
+    {
+        return Integer.parseInt(ConfigI.load("Night Info",context));
+    }
+
 }
