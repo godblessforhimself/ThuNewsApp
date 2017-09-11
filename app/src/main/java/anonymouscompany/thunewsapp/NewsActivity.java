@@ -63,23 +63,6 @@ public class NewsActivity extends AppCompatActivity {
 
             }
         });
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    news = (new BackendInter()).getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
-
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                } catch (Exception ex) {
-                    Message msg = new Message();
-                    msg.obj = ex.toString();
-                    msg.what = 0;
-                    handler.sendMessage(msg);
-                }
-            }
-        }).start();
 
         ImageButton imagebutton = (ImageButton)findViewById(R.id.imageButton2);
         imagebutton.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +84,6 @@ public class NewsActivity extends AppCompatActivity {
         });
 
         switchbutton = (Switch) findViewById(R.id.switch1);
-        //switchbutton.setChecked();
         switchbutton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -123,6 +105,24 @@ public class NewsActivity extends AppCompatActivity {
         });
 
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    news = (new BackendInter()).getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
+
+                    Message msg = new Message();
+                    msg.what = 1;
+                    handler.sendMessage(msg);
+                } catch (Exception ex) {
+                    Message msg = new Message();
+                    msg.obj = ex.toString();
+                    msg.what = 0;
+                    handler.sendMessage(msg);
+                }
+            }
+        }).start();
+
     }
     Handler handler = new Handler()  {
         @Override
@@ -139,6 +139,7 @@ public class NewsActivity extends AppCompatActivity {
                 time = (TextView) findViewById(R.id.newsTime2);
                 text = (EditText) findViewById(R.id.newsText);
                 img = (ImageView) findViewById(R.id.imgres2);
+                switchbutton.setChecked(bi.isCollectionNews(news.news_ID, NewsActivity.this));
 
                 text.setText(news.news_Content);
                 tag.setText(news.newsClassTag);
