@@ -30,5 +30,6 @@ public class ConfigI //用户设置保持
         SharedPreferences sharedPref = context.getSharedPreferences("tony.xml",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor =sharedPref.edit();
         editor.clear();
+        editor.commit();
     }
 }

@@ -46,6 +46,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     private HomeAdapter mAdapter;
     private PullToRefreshView mPullToRefreshView;
     private View mheader,mfooter;
+    private int isonsearchorfavourite = 0;
     private int refreshoradd = REFRESH;
     private static final int REFRESH = 1, ADD = 0;
     //是否正在网络通信
@@ -237,6 +238,14 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
         public void set(NewsTitle.MyList it)
         {
+            title.setText(it.news_Title);
+            intro.setText("  "+it.news_Intro);
+            author.setText(it.news_Author);
+            tag.setText(it.newsClassTag);
+            time.setText(it.news_Time);
+            img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
+            id = it.news_ID;
+
             if (itemView == mheader || itemView == mfooter)
                 return;
             if(news.isviewed(id, uiActivity.this)) {
@@ -269,15 +278,26 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         }
 
         public void onClick(View v) {
-            if(news.isviewed(id, uiActivity.this)) {
-                title.setTextColor(Color.GRAY);
-                intro.setTextColor(Color.GRAY);
-            } else {
-                title.setTextColor(Color.BLACK);
-                intro.setTextColor(Color.BLACK);
-            }
+            //showTip(id);
             new Thread(opennews).start();
         }
+
+        Handler hd = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 0) {
+                    if(news.isviewed(id, uiActivity.this)) {
+                        title.setTextColor(Color.GRAY);
+                        intro.setTextColor(Color.GRAY);
+                    } else {
+                        title.setTextColor(Color.BLACK);
+                        intro.setTextColor(Color.BLACK);
+                    }
+                } else {
+                    showTip((String)msg.obj);
+                }
+            }
+        };
 
         Runnable opennews = new Runnable() {
             @Override
@@ -286,9 +306,16 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     news.viewed(news.getNewsText(id, uiActivity.this), uiActivity.this);
                     Intent intent = new Intent(uiActivity.this, NewsActivity.class);
                     intent.putExtra("NewsText", id);
+                    Message msg = new Message();
+                    msg.what = 0;
+                    hd.sendMessage(msg);
                     startActivity(intent);
                 } catch (Exception ex) {
                     Log.d("exception",ex.toString());
+                    Message msg = new Message();
+                    msg.what = 1;
+                    msg.obj = ex.toString();
+                    hd.sendMessage(msg);
                 }
             }
         };

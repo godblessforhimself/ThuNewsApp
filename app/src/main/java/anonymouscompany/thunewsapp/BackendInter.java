@@ -25,6 +25,7 @@ public class BackendInter implements  BackendInterface
             if (Storage.isShield(text, context))
             {
                 title.list.remove(i);
+                i--;
             }
         }
         return title;
@@ -44,7 +45,7 @@ public class BackendInter implements  BackendInterface
     {
         String oncesee=ConfigI.load(news_ID,context);
         NewsText text;
-        if (oncesee.equals("1")) text=Storage.findText(news_ID,context);
+        if (!oncesee.equals("0")) text=Storage.findText(news_ID,context);
         else
         {
             String str=ReversedNews.getReversedNewsText(news_ID);
@@ -107,9 +108,9 @@ public class BackendInter implements  BackendInterface
         if (!ConfigI.load(news_ID,context).equals("0")) return true;
         return false;
     }
-    public NewsTitle searchNewsTitel(String keyword,Context context) throws  Exception
+    public NewsTitle searchNewsTitel(String keyword,int page, int pagesize, int category,Context context) throws Exception
     {
-        String str=ReversedNews.getReversedSearchNews(keyword);
+        String str=ReversedNews.getReversedSearchNews(keyword,page,pagesize,category);
         NewsTitle title=JasonClass.StringtoJson(str,NewsTitle.class);
         for (int i=0;i<title.list.size();i++)
         {
