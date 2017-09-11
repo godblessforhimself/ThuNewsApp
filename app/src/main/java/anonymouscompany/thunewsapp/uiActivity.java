@@ -253,7 +253,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         }
 
         public void onClick(View v) {
-
             if(news.isviewed(id, uiActivity.this)) {
                 title.setTextColor(Color.GRAY);
                 intro.setTextColor(Color.GRAY);
@@ -261,15 +260,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 title.setTextColor(Color.BLACK);
                 intro.setTextColor(Color.BLACK);
             }
-            try {
-                news.viewed(news.getNewsText(id, uiActivity.this), uiActivity.this);
-                Intent intent = new Intent(uiActivity.this, NewsActivity.class);
-                intent.putExtra("NewsText", id);
-                startActivity(intent);
-            } catch (Exception ex) {
-                Log.d("exception",ex.toString());
-            }
-           // new Thread(opennews).start();
+            new Thread(opennews).start();
         }
 
         Runnable opennews = new Runnable() {
