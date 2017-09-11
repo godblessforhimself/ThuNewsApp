@@ -46,6 +46,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     private PullToRefreshView mPullToRefreshView;
     private View mheader,mfooter;
     private int refreshoradd = 0;
+    private int isonsearchorfavourite = 0;
     private SearchView mSearchView = null;
     private void showTip(String s)
     {
