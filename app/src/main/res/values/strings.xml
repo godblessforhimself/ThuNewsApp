@@ -5,4 +5,5 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="action_settings">SETTING</string>
+    <string name="title_activity_news">NewsActivity</string>
 </resources>

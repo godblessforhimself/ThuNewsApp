@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="anonymouscompany.thunewsapp.NewsActivity"
+    tools:showIn="@layout/activity_news">
+
+    <ScrollView
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/viewHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="false"
+            android:background="@drawable/icn_2"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="0dp">
+
+
+            <TextView
+                android:id="@+id/newsTitle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="1dp"
+                android:text="TextView"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@android:color/background_dark"
+                android:textSize="30sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/newsTag2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Tag"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/newsAuthor2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Author"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/newsTime2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Time"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/newsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="textMultiLine" />
+
+            <ImageView
+                android:id="@+id/imgres2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                app:srcCompat="@color/colorAccent" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>
