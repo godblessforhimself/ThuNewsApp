@@ -29,6 +29,5 @@ public interface BackendInterface
     void getNewsPictures();//获得图片
     void setNight(int type, Context context);//保持夜间模式配置信息
     int getNight(Context context);//获得是否为夜间模式
-
 }
 
