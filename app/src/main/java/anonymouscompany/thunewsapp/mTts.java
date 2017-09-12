@@ -27,7 +27,7 @@ interface mTtsInterface
     void resumeSpeaking();//继续播放
     boolean isSpeaking();//是否正在播放
     boolean destroy();//销毁Synthesizer，若仍在播放返回false。可以不用它。
-
+    boolean hasInit();
     //参数设置和获取（已经有默认值，可以不调用）
     void setSpeed(int speed);//设置语速，默认50，范围[0,100]
     void setVolume(int volume);//设置合成语音音量，默认50，范围[0,100]
@@ -45,6 +45,7 @@ public class mTts implements mTtsInterface{
     private String mText;
     private SpeechSynthesizer mTts;
     private int buffer,speaking;
+    private boolean valid = false;
     private InitListener mListener = new InitListener() {
         @Override
         public void onInit(int i) {
@@ -119,32 +120,55 @@ public class mTts implements mTtsInterface{
         mTts.setParameter(SpeechConstant.VOICE_NAME,"xiaoyan");
         mTts.setParameter(SpeechConstant.VOLUME,"50");
         mTts.setParameter(SpeechConstant.SPEED,"50");
-
+        valid = true;
     }
 
     @Override
     public int startSpeaking() {
+        if (mTts == null)
+            return -1;
        return mTts.startSpeaking(mText,mTtsListener);
     }
 
 
     @Override
     public void stopSpeaking() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            return;
+        }
         mTts.stopSpeaking();
+        valid = false;
     }
 
     @Override
     public void pauseSpeaking() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            return;
+        }
         mTts.pauseSpeaking();
     }
 
     @Override
     public void resumeSpeaking() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            return;
+        }
         mTts.resumeSpeaking();
     }
 
     @Override
     public boolean isSpeaking() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            return false;
+        }
         return mTts.isSpeaking();
     }
 
@@ -152,9 +176,16 @@ public class mTts implements mTtsInterface{
     public boolean destroy() {
         if (mTts.isSpeaking())
         {
-            showTip("Tts is speaking ,cannot destroy it...");
+            showTip("Tts is speaking , destroy it...");
+            mTts.stopSpeaking();
         }
+        valid = false;
         return mTts.destroy();
+    }
+
+    @Override
+    public boolean hasInit() {
+        return valid;
     }
 
     @Override
