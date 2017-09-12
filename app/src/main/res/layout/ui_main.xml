@@ -41,20 +41,114 @@
             android:text="Switch" />
     </LinearLayout>
 
-    <SearchView
-        android:id="@+id/searchview"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal">
+
+        <SearchView
+            android:id="@+id/searchview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left">
+
+        </SearchView>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/headTab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            app:tabBackground="@android:color/white"
+            app:tabMode="scrollable">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag1" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag2" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag3" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag4" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag5" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag6" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag7" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag8" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag9" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag10" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag11" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tag12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag12" />
+        </android.support.design.widget.TabLayout>
+    </LinearLayout>
 
     <com.yalantis.phoenix.PullToRefreshView
         android:id="@+id/pull_to_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_weight="3">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle_0"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/icn_7"
+            android:layout_margin="10dp"
+            android:foregroundGravity="center"
             android:paddingBottom="3dp"
             android:paddingEnd="3dp"
             android:paddingLeft="3dp"
@@ -64,6 +158,11 @@
 
         </android.support.v7.widget.RecyclerView>
     </com.yalantis.phoenix.PullToRefreshView>
+
+    <include
+        layout="@layout/bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></include>
 
 </LinearLayout>
 

@@ -6,4 +6,20 @@
     <string name="drawer_close">Close</string>
     <string name="action_settings">SETTING</string>
     <string name="title_activity_news">NewsActivity</string>
+    <string name="tag1">科技</string>
+    <string name="tag2">教育</string>
+    <string name="tag3">军事</string>
+    <string name="tag4">国内</string>
+    <string name="tag5">社会</string>
+    <string name="tag6">文化</string>
+    <string name="tag7">汽车</string>
+    <string name="tag8">国际</string>
+    <string name="tag9">体育</string>
+    <string name="tag10">财经</string>
+    <string name="tag11">健康</string>
+    <string name="tag12">娱乐</string>
+    <string name="首页">首页</string>
+    <string name="发现">发现</string>
+    <string name="消息">消息</string>
+    <string name="我的">我的</string>
 </resources>

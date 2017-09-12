@@ -58,7 +58,7 @@ public class mWbshare implements mWbshareInterface,WbShareCallback
     @Override
     public void setShareInfo(NewsText news)
     {
-        String text = "标题:" + news.news_Title + " 简介:" + news.news_Content;
+        String text = news.news_Title + "\n" + news.news_Content;
         setText(text);
         String url = news.news_URL;
         setUrl(url);

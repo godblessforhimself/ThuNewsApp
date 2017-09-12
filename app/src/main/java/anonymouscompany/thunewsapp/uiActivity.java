@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ActionMenuView;
@@ -24,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
@@ -43,8 +46,10 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     private RecyclerView recyclerView;
     private List<NewsTitle.MyList> mNews, mNewsBackup;
     private int newsNum, currentPage,pageSize;
+
     private HomeAdapter mAdapter;
     private PullToRefreshView mPullToRefreshView;
+    private TabLayout tabLayout;
     private View mheader,mfooter;
     private int issearching = 0;
     private int isfavourites = 0;
@@ -101,6 +106,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         mfooter = LayoutInflater.from(this).inflate(R.layout.recyclerview_footer,null,false);
         recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
         mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
+        tabLayout = (TabLayout) findViewById(R.id.headTab);
+        mAdapter = new HomeAdapter();
+        recyclerView.setAdapter(mAdapter);
+        news.setPicturesDisplay(0, uiActivity.this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new FadeInLeftAnimator());
     }
     Handler handler = new Handler() {
         @Override
@@ -157,9 +168,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_main);
         init();
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setItemAnimator(new FadeInLeftAnimator());
+        getSupportActionBar().hide();
         //上拉加载更多
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -179,11 +188,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 }
             }
         });
-        mAdapter = new HomeAdapter();
-        recyclerView.setAdapter(mAdapter);
 
-
-        news.setPicturesDisplay(0, uiActivity.this);
         try {
             mSearchView = (SearchView) findViewById(R.id.searchview);
             mSearchView.setOnQueryTextListener(this);
@@ -211,11 +216,11 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         addNews();
     }
 
-    //用户输入字符时激发该方法
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.optionsmenu, menu);
-        return true;
+
+        return false;
     }
 
     @Override
@@ -243,7 +248,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     //单击搜索按钮时激发该方法
     @Override
     public boolean onQueryTextSubmit(String query) {
-        // TODO Auto-generated method stub
         showTip(query);
         keyword = query;
         if (query.equals("")) {
@@ -370,7 +374,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         .override(300, 200)
                         .fitCenter()
                         .dontAnimate()
-                        .placeholder(R.drawable.ic_launcher)
+                        .placeholder(R.drawable.code)
                         .into(img);
             }
             id = it.news_ID;

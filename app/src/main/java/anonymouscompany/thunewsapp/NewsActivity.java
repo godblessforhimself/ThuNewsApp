@@ -111,7 +111,6 @@ public class NewsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         tts = (ImageView)findViewById(R.id.tts_button);
         tts.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +140,7 @@ public class NewsActivity extends AppCompatActivity {
                 wbshareInstance.init(NewsActivity.this);
                 wbshareInstance.setShareInfo(news);
                 showTip("正在生成分享，请等待...");
+                new Thread(shareDownload).start();
             }
         });
 
