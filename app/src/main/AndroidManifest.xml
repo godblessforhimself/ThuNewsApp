@@ -37,7 +37,8 @@
             android:name=".NewsActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".BaikeWebActivity">
+        <activity android:name=".BaikeWebActivity"
+            android:exported="true">
 
         </activity>
     </application>
