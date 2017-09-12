@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -216,13 +217,98 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             }
         });
         addNews();
-    }
+        LinearLayout blay1 = (LinearLayout) findViewById(R.id.blay1);
+        blay1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refresh();
+            }
+        });
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.optionsmenu, menu);
+        LinearLayout blay2 = (LinearLayout) findViewById(R.id.blay2);
+        blay2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
+                if (isfavourites == 1) {
+                    currentPage--;
+                    iv.setImageResource(R.drawable.favorite);
+                } else {
+                    iv.setImageResource(R.drawable.favorite_y);
+                }
+                isfavourites = isfavourites ^1;
+                refresh();
+            }
+        });
 
-        return false;
+        LinearLayout blay3 = (LinearLayout) findViewById(R.id.blay3);
+        blay3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int d_n = news.getNight(uiActivity.this);
+                d_n = d_n ^1;
+                news.setNight(d_n, uiActivity.this);
+            }
+        });
+
+        LinearLayout blay4 = (LinearLayout) findViewById(R.id.blay4);
+        blay4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshoradd = REFRESH;
+                        Message msg = new Message();
+                        Bundle data = new Bundle();
+                        List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
+                        try{
+                            e.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
+                            data.putParcelableArrayList("news",(ArrayList)e);
+                            msg.setData(data);
+                            msg.what = 1;
+                            handler.sendMessage(msg);
+                        } catch (Exception ex)
+                        {
+                            Log.d("exception",ex.toString());
+                            msg.what = 0;
+                            msg.obj = ex.toString();
+                            handler.sendMessage(msg);
+                        }
+                    }
+                }).start();
+            }
+        });
+
+
+        LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
+        blay5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+
+        TabLayout tl = (TabLayout) findViewById(R.id.headTab);
+        tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                cate = tab.getPosition();
+                //showTip(new Integer(cate).toString());
+                mNews.clear();
+                currentPage = 1;
+                refresh();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     @Override
@@ -268,49 +354,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             mSearchView.clearFocus(); // 不获取焦点
         }
         refresh();
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.D_N) {
-
-        } else if (id == R.id.Favourites) {
-            if (isfavourites == 1) {
-                currentPage--;
-            }
-            isfavourites = isfavourites ^1;
-            refresh();
-        } else if (id == R.id.Marks) {
-        } else if (id == R.id.suggest) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    refreshoradd = REFRESH;
-                    Message msg = new Message();
-                    Bundle data = new Bundle();
-                    List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
-                    try{
-                        e.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
-                        data.putParcelableArrayList("news",(ArrayList)e);
-                        msg.setData(data);
-                        msg.what = 1;
-                        handler.sendMessage(msg);
-                    } catch (Exception ex)
-                    {
-                        Log.d("exception",ex.toString());
-                        msg.what = 0;
-                        msg.obj = ex.toString();
-                        handler.sendMessage(msg);
-                    }
-                }
-            }).start();
-
-        }
-
         return true;
     }
 
