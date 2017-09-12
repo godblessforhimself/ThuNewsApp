@@ -71,12 +71,12 @@ public class Storage
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
             for (int i=0;i<title.list.size();i++)
-                if (!title.list.get(i).news_ID.equals(news_ID))
+                if (title.list.get(i).news_ID.equals(news_ID))
                 {
                     title.list.remove(i);
-                    return ;
+                    break;
                 }
-                    out.write(JasonClass.JsontoString(title)+"\n");
+            out.write(JasonClass.JsontoString(title)+"\n");
             out.close();
         }catch (Exception e)
         {
