@@ -4,6 +4,10 @@
 
 
     <item
+        android:id="@+id/suggest"
+        android:icon="@drawable/icn_6"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/Favourites"
         android:checkable="true"
         android:icon="@drawable/star"

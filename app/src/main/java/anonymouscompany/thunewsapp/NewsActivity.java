@@ -151,11 +151,14 @@ public class NewsActivity extends AppCompatActivity {
                 if (!news.news_Pictures.equals(""))
                 {
                     String[] pictures = news.news_Pictures.split(";");
+                    /*
                     if (!pictures[0].equals(""))
                     Glide.with(NewsActivity.this)
                             .load(pictures[0])
                             .placeholder(R.drawable.loading)
                             .into(img);
+                     */
+                    //新闻列表图片加载
                 }
             }
         }

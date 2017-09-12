@@ -41,14 +41,17 @@ import java.util.List;
 public class uiActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
     private static BackendInter news = new BackendInter();
     private RecyclerView recyclerView;
-    private List<NewsTitle.MyList> mNews;
+    private List<NewsTitle.MyList> mNews, mNewsBackup;
     private int newsNum, currentPage,pageSize;
     private HomeAdapter mAdapter;
     private PullToRefreshView mPullToRefreshView;
     private View mheader,mfooter;
-    private int isonsearchorfavourite = 0;
+    private int issearching = 0;
+    private int isfavourites = 0;
     private int refreshoradd = REFRESH;
     private static final int REFRESH = 1, ADD = 0;
+    private String keyword = "";
+    private int cate = 0;
     //是否正在网络通信
     private boolean isLoading = false;
     private SearchView mSearchView = null;
@@ -58,14 +61,32 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
     private void refresh()
     {
+        if (isfavourites == 1) {
+            mNews.clear();
+            mNews.addAll(news.getCollectionNews(uiActivity.this).list);
+            newsNum = mNews.size();
+            mAdapter.init(mNews);
+            mAdapter.notifyDataSetChanged();
+            return;
+        } else {
+
+        }
         refreshoradd = REFRESH;
-        newsNum = 0;
-        currentPage = 1;
         showTip("Refresh, you should set some view changed...");
         new Thread(netWorkTask).start();
     }
     public void addNews()
     {
+        if (isfavourites == 1) {
+            mNews.clear();
+            mNews.addAll(news.getCollectionNews(uiActivity.this).list);
+            newsNum = mNews.size();
+            mAdapter.init(mNews);
+            mAdapter.notifyDataSetChanged();
+            return;
+        } else {
+
+        }
         refreshoradd = ADD;
         showTip("addNews, you should set some view changed...");
         new Thread(netWorkTask).start();
@@ -85,6 +106,10 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            if (msg.what == 0) {
+                showTip((String) msg.obj);
+                return;
+            }
             if (refreshoradd == ADD) {
                 mNews.addAll((ArrayList) msg.getData().getParcelableArrayList("news"));
             }
@@ -92,7 +117,11 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 mNews.addAll(0, (ArrayList) msg.getData().getParcelableArrayList("news"));
             }
             newsNum = mNews.size();
-            currentPage ++;
+            if (issearching == 0) {
+                currentPage++;
+            } else {
+                issearching++;
+            }
             mAdapter.init(mNews);
             mAdapter.notifyDataSetChanged();
             showTip("News fetch finish, total num:" + newsNum);
@@ -107,9 +136,14 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             Bundle data = new Bundle();
             List<NewsTitle.MyList> e;
             try{
-                e = news.getNewsTitle(currentPage, pageSize, 0, uiActivity.this).list;
+                if (issearching == 0) {
+                    e = news.getNewsTitle(currentPage, pageSize, cate, uiActivity.this).list;
+                } else {
+                    e = news.searchNewsTitel(keyword, issearching, pageSize, cate, uiActivity.this).list;
+                }
                 data.putParcelableArrayList("news",(ArrayList)e);
                 msg.setData(data);
+                msg.what = 1;
                 handler.sendMessage(msg);
             } catch (Exception ex)
             {
@@ -185,8 +219,25 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String query) {
         // TODO Auto-generated method stub
+        keyword = query;
+        if (query.equals("")) {
+            issearching = 0;
+            currentPage--;
+            if (mSearchView != null) {
+                // 得到输入管理对象
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    // 这将让键盘在所有的情况下都被隐藏，但是一般我们在点击搜索按钮后，输入法都会乖乖的自动隐藏的。
+                    imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0); // 输入法如果是显示状态，那么就隐藏输入法
+                }
+                mSearchView.clearFocus(); // 不获取焦点
+            }
+            refresh();
+        } else {
+            issearching = 1;
+        }
         return true;
     }
     //单击搜索按钮时激发该方法
@@ -194,6 +245,13 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     public boolean onQueryTextSubmit(String query) {
         // TODO Auto-generated method stub
         showTip(query);
+        keyword = query;
+        if (query.equals("")) {
+            issearching = 0;
+            currentPage--;
+        } else {
+            issearching = 1;
+        }
         if (mSearchView != null) {
             // 得到输入管理对象
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -203,6 +261,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             }
             mSearchView.clearFocus(); // 不获取焦点
         }
+        refresh();
         return true;
     }
 
@@ -214,7 +273,11 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         if (id == R.id.D_N) {
 
         } else if (id == R.id.Favourites) {
-
+            if (isfavourites == 1) {
+                currentPage--;
+            }
+            isfavourites = isfavourites ^1;
+            refresh();
         } else if (id == R.id.Marks) {
             showTip("Marks");
             if (findViewById(R.id.MarksBoxs).getVisibility() == View.VISIBLE) {
@@ -222,6 +285,30 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             } else {
                 findViewById(R.id.MarksBoxs).setVisibility(View.VISIBLE);
             }
+        } else if (id == R.id.suggest) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshoradd = REFRESH;
+                    Message msg = new Message();
+                    Bundle data = new Bundle();
+                    List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
+                    try{
+                        e.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
+                        data.putParcelableArrayList("news",(ArrayList)e);
+                        msg.setData(data);
+                        msg.what = 1;
+                        handler.sendMessage(msg);
+                    } catch (Exception ex)
+                    {
+                        Log.d("exception",ex.toString());
+                        msg.what = 0;
+                        msg.obj = ex.toString();
+                        handler.sendMessage(msg);
+                    }
+                }
+            }).start();
+
         }
 
         return true;

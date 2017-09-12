@@ -59,6 +59,7 @@ public class BackendInter implements  BackendInterface
     }
     public void addCollectionNews(NewsText text,Context context)
     {
+       if (ConfigI.load(text.news_ID,context).equals("2")) return;
         viewed(text,context);
         NewsTitle title=new NewsTitle(text);
         ConfigI.Save(text.news_ID,"2",context);
