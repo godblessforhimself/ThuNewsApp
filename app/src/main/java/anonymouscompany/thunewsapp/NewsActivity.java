@@ -177,7 +177,7 @@ public class NewsActivity extends AppCompatActivity {
                 tag = (TextView) findViewById(R.id.newsTag2);
                 author = (TextView) findViewById(R.id.newsAuthor2);
                 time = (TextView) findViewById(R.id.newsTime2);
-                text = (EditText) findViewById(R.id.newsText);
+                text = (TextView) findViewById(R.id.newsText);
                 img = (ImageView) findViewById(R.id.imgres2);
                 switchbutton.setChecked(bi.isCollectionNews(news.news_ID, NewsActivity.this));
                 text.setText(news.news_Content);

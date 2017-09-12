@@ -110,7 +110,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         tabLayout = (TabLayout) findViewById(R.id.headTab);
         mAdapter = new HomeAdapter();
         recyclerView.setAdapter(mAdapter);
-        news.setPicturesDisplay(0, uiActivity.this);
+        news.setPicturesDisplay(1, uiActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());

@@ -49,18 +49,28 @@
 
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
-        <include layout="@layout/content_news" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal|end"
-        android:gravity="center"
         android:orientation="vertical">
 
         <include
+            layout="@layout/content_news"
+            android:layout_width="match_parent"
+            android:layout_height="450dp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            app:srcCompat="@color/backgroundColor" />
+
+        <include
             layout="@layout/news_bottom_menu"
-            ></include>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></include>
     </LinearLayout>
+
 
 </LinearLayout>
