@@ -23,9 +23,11 @@
     <string name="发现">收藏夹</string>
     <string name="消息">推荐</string>
     <string name="我的">我的</string>
-    <string name="加入收藏">加入收藏</string>
+    <string name="加入收藏">收藏/取消收藏</string>
     <string name="播放">播放</string>
+    <string name="resume">继续</string>
     <string name="暂停">暂停</string>
+    <string name="stop">结束</string>
     <string name="分享">微博分享</string>
     <string name="title_activity_settings">Settings</string>
 

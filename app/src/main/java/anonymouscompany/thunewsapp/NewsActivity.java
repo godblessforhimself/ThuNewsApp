@@ -1,53 +1,215 @@
 package anonymouscompany.thunewsapp;
 
-import android.app.ActionBar;
-import android.content.Intent;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
-import android.os.StrictMode;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.Switch;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.util.concurrent.Exchanger;
 
 public class NewsActivity extends AppCompatActivity {
-    BackendInter bi = new BackendInter();
-    NewsText news = null;
-    Toolbar toolbar = null;
-    ImageButton share = null;
-    Switch switchbutton = null;
-    mWbshare wbshareInstance = new mWbshare();
-    ImageView tts;
+    BackendInter bi;
+    mWbshare wbshareInstance;
+    mTts ttsInstance;
+    NewsText news;
+    LinearLayout start,pause,share,collect;
+    ExpandableListView keyword;
+    boolean collected = false;
     TextView title,tag,author,time,text;
     ImageView img;
     String sharemsg = "";
+    Handler handler,shareHandler;
+    private static final int loadFailed = 0, loadSuccess = 1;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //先做一个加载界面
+        setContentView(R.layout.loading);
+        showTip("正在加载");
+        handler = new Handler()  {
+            @Override
+            public void handleMessage(Message msg)
+            {
+                super.handleMessage(msg);
+                if (msg.what == loadFailed)
+                {
+                    showTip((String)msg.obj);
+                }
+                else
+                {
+                    setContentView(R.layout.activity_news);
+                    showTip("加载成功");
+                    init();
+                    if (bi.isCollectionNews(news.news_ID,NewsActivity.this))
+                    {
+                        collected = true;
+                        ((ImageView)findViewById(R.id.s31)).setImageResource(R.drawable.collected);
+                    }
+                    setListeners();
+                    text.setText(news.news_Content);
+                    tag.setText(news.newsClassTag);
+                    time.setText(news.news_Time);
+                    author.setText(news.news_Author);
+                    title.setText(news.news_Title);
+                    if (!news.news_Pictures.equals(""))
+                    {
+                        String[] pictures = news.news_Pictures.split(";");
+                        if (!pictures[0].equals(""))
+                        {
+                            Glide.with(NewsActivity.this)
+                                    .load(pictures[0])
+                                    .fitCenter()
+                                    .dontAnimate()
+                                    .placeholder(R.drawable.code)
+                                    .into(img);
+                            showTip(pictures[0]);
+                            Log.d("Picture",pictures[0] + "newsid:" +news.news_ID);
+                        }
+
+                        //新闻列表图片加载
+                    }
+                }
+            }
+        };
+        shareHandler = new Handler()
+        {
+            @Override
+            public void handleMessage(Message msg)
+            {
+                showTip(sharemsg);
+                Bitmap map = msg.getData().getParcelable("bitmap");
+                wbshareInstance.setThumbImg(map);
+                wbshareInstance.shareMessage();
+            }
+        };
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    bi = new BackendInter();
+                    news = bi.getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
+                    Message msg = new Message();
+                    msg.what = loadSuccess;
+                    handler.sendMessage(msg);
+                } catch (Exception ex) {
+                    Message msg = new Message();
+                    msg.obj = ex.toString();
+                    msg.what = loadFailed;
+                    handler.sendMessage(msg);
+                }
+            }
+        }).start();
+
+    }
+
+    void init()
+    {
+        wbshareInstance = new mWbshare();
+        ttsInstance = new mTts();
+        keyword = (ExpandableListView) findViewById(R.id.keyword);
+        title = (TextView) findViewById(R.id.newsTitle2);
+        tag = (TextView) findViewById(R.id.newsTag2);
+        author = (TextView) findViewById(R.id.newsAuthor2);
+        time = (TextView) findViewById(R.id.newsTime2);
+        text = (TextView) findViewById(R.id.newsText);
+        img = (ImageView) findViewById(R.id.imgres2);
+        start = (LinearLayout) findViewById(R.id.s1);
+        pause = (LinearLayout) findViewById(R.id.s2);
+        collect = (LinearLayout) findViewById(R.id.s3);
+        share = (LinearLayout) findViewById(R.id.s4);
+
+    }
+    private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
+    private int ttsState = NOTINIT;
+    void setListeners()
+    {
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ttsState == NOTINIT || ttsState == STOP)
+                {
+                    ttsInstance.initEngine(NewsActivity.this, news.news_Content);
+                    ttsInstance.startSpeaking();
+                    //动画效果
+                    ((ImageView)findViewById(R.id.s11)).setImageResource(R.drawable.pause);
+                    ((TextView)findViewById(R.id.s12)).setText(R.string.暂停);
+                    showTip("播放");
+                    ttsState = SPEAKING;
+                }
+                else if (ttsState == SPEAKING)
+                {
+                    ttsInstance.pauseSpeaking();
+                    ((ImageView)findViewById(R.id.s11)).setImageResource(R.drawable.play);
+                    ((TextView)findViewById(R.id.s12)).setText(R.string.resume);
+                    showTip("暂停");
+                    ttsState = PAUSING;
+                }
+                else if (ttsState == PAUSING)
+                {
+                    ttsInstance.resumeSpeaking();
+                    ((ImageView)findViewById(R.id.s11)).setImageResource(R.drawable.pause);
+                    ((TextView)findViewById(R.id.s12)).setText(R.string.暂停);
+                    showTip("继续");
+                    ttsState = SPEAKING;
+                }
+            }
+        });
+        pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ttsInstance.isSpeaking())
+                {
+                    ttsInstance.stopSpeaking();
+                }
+                ttsInstance.destroy();
+                ttsState = STOP;
+                showTip("结束TTS语音");
+                ((ImageView)findViewById(R.id.s11)).setImageResource(R.drawable.play);
+                ((TextView)findViewById(R.id.s12)).setText(R.string.播放);
+            }
+        });
+        collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (collected)
+                {
+                    bi.delCollectionNews(news,NewsActivity.this);
+                    collected = false;
+                    ((ImageView)findViewById(R.id.s31)).setImageResource(R.drawable.favorites);
+                }
+                else if (!collected)
+                {
+                    bi.addCollectionNews(news, NewsActivity.this);
+                    collected = true;
+                    ((ImageView)findViewById(R.id.s31)).setImageResource(R.drawable.collected);
+                }
+            }
+        });
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wbshareInstance.init(NewsActivity.this);
+                wbshareInstance.setShareInfo(news);
+                showTip("正在生成分享，请等待...");
+                new Thread(shareDownload).start();
+            }
+        });
+    }
+
     Runnable shareDownload = new Runnable() {
         @Override
         public void run() {
@@ -80,17 +242,7 @@ public class NewsActivity extends AppCompatActivity {
 
         }
     };
-    Handler shareHandler = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg)
-        {
-            showTip(sharemsg);
-            Bitmap map = msg.getData().getParcelable("bitmap");
-            wbshareInstance.setThumbImg(map);
-            wbshareInstance.shareMessage();
-        }
-    };
+
     public InputStream getImageStream(String path) throws Exception{
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -105,107 +257,4 @@ public class NewsActivity extends AppCompatActivity {
     {
         Toast.makeText(NewsActivity.this,s, Toast.LENGTH_LONG).show();
     }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        ImageButton imagebutton = (ImageButton)findViewById(R.id.imageButton2);
-        imagebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        share = (ImageButton)findViewById(R.id.share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wbshareInstance = new mWbshare();
-                wbshareInstance.init(NewsActivity.this);
-                wbshareInstance.setShareInfo(news);
-                showTip("正在生成分享，请等待...");
-                new Thread(shareDownload).start();
-            }
-        });
-
-        switchbutton = (Switch) findViewById(R.id.switch1);
-        switchbutton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    bi.addCollectionNews(news, NewsActivity.this);
-                } else {
-                    bi.delCollectionNews(news, NewsActivity.this);
-                }
-            }
-        });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    news = (new BackendInter()).getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
-
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                } catch (Exception ex) {
-                    Message msg = new Message();
-                    msg.obj = ex.toString();
-                    msg.what = 0;
-                    handler.sendMessage(msg);
-                }
-            }
-        }).start();
-
-    }
-    Handler handler = new Handler()  {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 0) {
-                showTip((String)msg.obj);
-            } else {
-                toolbar.setTitle(news.news_Title);
-                setSupportActionBar(toolbar);
-                title = (TextView) findViewById(R.id.newsTitle2);
-                tag = (TextView) findViewById(R.id.newsTag2);
-                author = (TextView) findViewById(R.id.newsAuthor2);
-                time = (TextView) findViewById(R.id.newsTime2);
-                text = (TextView) findViewById(R.id.newsText);
-                img = (ImageView) findViewById(R.id.imgres2);
-                switchbutton.setChecked(bi.isCollectionNews(news.news_ID, NewsActivity.this));
-                text.setText(news.news_Content);
-                tag.setText(news.newsClassTag);
-                time.setText(news.news_Time);
-                author.setText(news.news_Author);
-                title.setText(news.news_Title);
-
-                if (!news.news_Pictures.equals(""))
-                {
-                    String[] pictures = news.news_Pictures.split(";");
-
-                    if (!pictures[0].equals(""))
-                    {
-                        Glide.with(NewsActivity.this)
-                                .load(pictures[0])
-                                .override(300, 200)
-                                .fitCenter()
-                                .dontAnimate()
-                                .placeholder(R.drawable.code)
-                                .into(img);
-                        showTip(pictures[0]);
-                        Log.d("Picture",pictures[0] + "newsid:" +news.news_ID);
-                    }
-
-                    //新闻列表图片加载
-                }
-            }
-        }
-    };
 }
