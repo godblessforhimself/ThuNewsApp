@@ -11,6 +11,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:animateLayoutChanges="false"
+    android:background="@android:color/background_light"
     android:orientation="vertical">
 
     <TextView

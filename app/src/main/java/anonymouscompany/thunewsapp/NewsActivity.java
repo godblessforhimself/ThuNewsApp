@@ -212,10 +212,13 @@ public class NewsActivity extends AppCompatActivity {
                     String[] pictures = news.news_Pictures.split(";");
 
                     if (!pictures[0].equals(""))
-                    Glide.with(NewsActivity.this)
-                            .load(pictures[0])
-                            .placeholder(R.drawable.loading)
-                            .into(img);
+                    {
+                        Glide.with(NewsActivity.this)
+                                .load(pictures[0])
+                                .placeholder(R.drawable.loading)
+                                .into(img);
+                        showTip(pictures[0]);
+                    }
 
                     //新闻列表图片加载
                 }

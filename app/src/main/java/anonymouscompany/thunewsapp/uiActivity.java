@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -111,6 +112,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         recyclerView.setAdapter(mAdapter);
         news.setPicturesDisplay(0, uiActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
     }
     Handler handler = new Handler() {

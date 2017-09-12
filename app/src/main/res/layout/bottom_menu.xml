@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="45dp"
     android:alpha="50"
     android:background="@android:color/background_light"
     android:orientation="horizontal">
@@ -16,10 +16,10 @@
 
         <ImageView
             android:id="@+id/bmenu_img1"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/all" />
 
@@ -42,10 +42,10 @@
 
         <ImageView
             android:id="@+id/bmenu_img2"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/favorite" />
 
@@ -60,7 +60,7 @@
 
     <LinearLayout
         android:id="@+id/blay3"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
@@ -68,7 +68,7 @@
         <ImageView
             android:id="@+id/bmenu_img3"
             android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="5dp"
             android:scaleType="fitCenter"
@@ -85,11 +85,10 @@
 
         <ImageView
             android:id="@+id/bmenu_img4"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
+            android:layout_margin="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/lights" />
 
@@ -111,10 +110,10 @@
 
         <ImageView
             android:id="@+id/bmenu_img5"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/atm" />
 
