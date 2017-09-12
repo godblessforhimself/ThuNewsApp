@@ -229,8 +229,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         blay2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
                 if (isfavourites == 1) {
                     currentPage--;
+                    iv.setImageResource(R.drawable.favorite);
+                } else {
+                    iv.setImageResource(R.drawable.favorite_y);
                 }
                 isfavourites = isfavourites ^1;
                 refresh();
@@ -241,7 +245,9 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         blay3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                refresh();
+                int d_n = news.getNight(uiActivity.this);
+                d_n = d_n ^1;
+                news.setNight(d_n, uiActivity.this);
             }
         });
 
@@ -279,6 +285,28 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         blay5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            }
+        });
+
+        TabLayout tl = (TabLayout) findViewById(R.id.headTab);
+        tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                cate = tab.getPosition();
+                //showTip(new Integer(cate).toString());
+                mNews.clear();
+                currentPage = 1;
+                refresh();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
     }
