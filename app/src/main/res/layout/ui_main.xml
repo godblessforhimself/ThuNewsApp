@@ -8,40 +8,6 @@
     android:id="@+id/Lay">
 
     <LinearLayout
-        android:id="@+id/MarksBoxs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:weightSum="1">
-
-        <Switch
-            android:id="@+id/switch5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Switch" />
-
-        <Switch
-            android:id="@+id/switch4"
-            android:layout_width="103dp"
-            android:layout_height="wrap_content"
-            android:text="Switch" />
-
-        <Switch
-            android:id="@+id/switch2"
-            android:layout_width="101dp"
-            android:layout_height="wrap_content"
-            android:text="Switch" />
-
-        <Switch
-            android:id="@+id/switch3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.95"
-            android:text="Switch" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
