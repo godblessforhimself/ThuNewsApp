@@ -1,0 +1,25 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="anonymouscompany.thunewsapp.SettingsActivity$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_info_black_24dp"
+        android:title="@string/pref_header_general" />
+
+    <header
+        android:fragment="anonymouscompany.thunewsapp.SettingsActivity$NotificationPreferenceFragment"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/pref_header_notifications" />
+
+    <header
+        android:fragment="anonymouscompany.thunewsapp.SettingsActivity$ShiledWordPreferenceFragment"
+        android:title="管理屏蔽关键字" />
+
+    <header
+        android:fragment="anonymouscompany.thunewsapp.SettingsActivity$ClearPreferenceFragment"
+        android:icon="@drawable/trash"
+        android:title="清理缓存" />
+
+
+</preference-headers>

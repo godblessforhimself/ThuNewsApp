@@ -285,6 +285,8 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         blay5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(uiActivity.this, SettingsActivity.class);
+                startActivity(intent);
             }
         });
 
