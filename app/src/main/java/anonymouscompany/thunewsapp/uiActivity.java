@@ -285,12 +285,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             isfavourites = isfavourites ^1;
             refresh();
         } else if (id == R.id.Marks) {
-            showTip("Marks");
-            if (findViewById(R.id.MarksBoxs).getVisibility() == View.VISIBLE) {
-                findViewById(R.id.MarksBoxs).setVisibility(View.GONE);
-            } else {
-                findViewById(R.id.MarksBoxs).setVisibility(View.VISIBLE);
-            }
         } else if (id == R.id.suggest) {
             new Thread(new Runnable() {
                 @Override
