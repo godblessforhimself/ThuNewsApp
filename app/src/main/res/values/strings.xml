@@ -6,6 +6,7 @@
     <string name="drawer_close">Close</string>
     <string name="action_settings">SETTING</string>
     <string name="title_activity_news">NewsActivity</string>
+    <string name="tag0">全部</string>
     <string name="tag1">科技</string>
     <string name="tag2">教育</string>
     <string name="tag3">军事</string>
