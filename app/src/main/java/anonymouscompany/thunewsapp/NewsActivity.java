@@ -215,7 +215,10 @@ public class NewsActivity extends AppCompatActivity {
                     {
                         Glide.with(NewsActivity.this)
                                 .load(pictures[0])
-                                .placeholder(R.drawable.loading)
+                                .override(300, 200)
+                                .fitCenter()
+                                .dontAnimate()
+                                .placeholder(R.drawable.code)
                                 .into(img);
                         showTip(pictures[0]);
                         Log.d("Picture",pictures[0] + "newsid:" +news.news_ID);
