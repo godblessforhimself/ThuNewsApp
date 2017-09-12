@@ -72,8 +72,11 @@ public class Storage
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
             for (int i=0;i<title.list.size();i++)
                 if (!title.list.get(i).news_ID.equals(news_ID))
+                {
                     title.list.remove(i);
-            out.write(JasonClass.JsontoString(title)+"\n");
+                    return ;
+                }
+                    out.write(JasonClass.JsontoString(title)+"\n");
             out.close();
         }catch (Exception e)
         {
@@ -161,12 +164,12 @@ public class Storage
         try
         {
             scanf=new Scanner(new FileInputStream(file));
+            while (scanf.hasNext()) title.list.addAll(JasonClass.StringtoJson(scanf.nextLine(),NewsTitle.class).list);
+            scanf.close();
         }catch(Exception e)
         {
-
+            System.out.println("!");
         }
-        while (scanf.hasNext()) title.list.addAll(JasonClass.StringtoJson(scanf.nextLine(),NewsTitle.class).list);
-        scanf.close();
         return title;
     }
 
