@@ -32,6 +32,7 @@ interface mWbshareInterface
     void setShareInfo(NewsText news);
     void setText(String text);//设置分享的文字
     void setUrl(String url);//设置分享的网址url
+    void setThumbImg(Bitmap img);
     void setImgs(ArrayList<Uri> pictures);//设置分享的图片，必须是本地图片，uri是资源标识符，通过图片地址转换
     void shareMessage();//生成微博分享
 }
@@ -41,6 +42,8 @@ public class mWbshare implements mWbshareInterface,WbShareCallback
     private String mText,mUrl;
     private Context mContext;
     private ArrayList<Uri> mImgs;
+    //缩略图
+    private Bitmap thumbImg;
     private WbShareHandler shareHandler;
 
     @Override
@@ -75,6 +78,10 @@ public class mWbshare implements mWbshareInterface,WbShareCallback
     public void setImgs(ArrayList<Uri> pictures) {
         mImgs = pictures;
     }
+    public void setThumbImg(Bitmap im)
+    {
+        thumbImg = im;
+    }
     private WebpageObject getWebpageObj() {
         WebpageObject mediaObject = new WebpageObject();
         mediaObject.identify = Utility.generateGUID();
@@ -105,6 +112,12 @@ public class mWbshare implements mWbshareInterface,WbShareCallback
         {
             MultiImageObject imgObj = new MultiImageObject();
             imgObj.setImageList(mImgs);
+            weiboMessage.multiImageObject = imgObj;
+        }
+        if (thumbImg != null)
+        {
+            MultiImageObject imgObj = new MultiImageObject();
+            imgObj.setThumbImage(thumbImg);
             weiboMessage.multiImageObject = imgObj;
         }
         shareHandler.shareMessage(weiboMessage, false);

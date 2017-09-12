@@ -2,6 +2,8 @@ package anonymouscompany.thunewsapp;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +31,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Exchanger;
@@ -39,9 +43,64 @@ public class NewsActivity extends AppCompatActivity {
     Toolbar toolbar = null;
     ImageButton share = null;
     Switch switchbutton = null;
+    mWbshare wbshareInstance = new mWbshare();
     ImageView tts;
     TextView title,tag,author,time,text;
     ImageView img;
+    String sharemsg = "";
+    Runnable shareDownload = new Runnable() {
+        @Override
+        public void run() {
+            if (news.news_Pictures.equals(""))
+            {
+                sharemsg = "fail";
+                return;
+            }
+            String[] pictures = news.news_Pictures.split(";");
+            for (String picture:pictures)
+            {
+                if (!picture.equals(""))
+                {
+                    try{
+                        Bitmap bitmap = BitmapFactory.decodeStream(getImageStream(picture));
+                        Message msg = new Message();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("bitmap",bitmap);
+                        msg.setData(bundle);
+                        sharemsg = "success";
+                        shareHandler.sendMessage(msg);
+                    }catch (Exception e)
+                    {
+                        sharemsg = "fail";
+                    }
+                    return;
+                }
+            }
+
+
+        }
+    };
+    Handler shareHandler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            showTip(sharemsg);
+            Bitmap map = msg.getData().getParcelable("bitmap");
+            wbshareInstance.setThumbImg(map);
+            wbshareInstance.shareMessage();
+        }
+    };
+    public InputStream getImageStream(String path) throws Exception{
+        URL url = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(5 * 1000);
+        conn.setRequestMethod("GET");
+        if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){
+            return conn.getInputStream();
+        }
+        return null;
+    }
     private void showTip(String s)
     {
         Toast.makeText(NewsActivity.this,s, Toast.LENGTH_LONG).show();
@@ -78,10 +137,10 @@ public class NewsActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mWbshare wbshareInstance = new mWbshare();
+                wbshareInstance = new mWbshare();
                 wbshareInstance.init(NewsActivity.this);
                 wbshareInstance.setShareInfo(news);
-                wbshareInstance.shareMessage();
+                showTip("正在生成分享，请等待...");
             }
         });
 
@@ -151,13 +210,13 @@ public class NewsActivity extends AppCompatActivity {
                 if (!news.news_Pictures.equals(""))
                 {
                     String[] pictures = news.news_Pictures.split(";");
-                    /*
+
                     if (!pictures[0].equals(""))
                     Glide.with(NewsActivity.this)
                             .load(pictures[0])
                             .placeholder(R.drawable.loading)
                             .into(img);
-                     */
+
                     //新闻列表图片加载
                 }
             }
