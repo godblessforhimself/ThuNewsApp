@@ -91,6 +91,10 @@ public class BackendInter implements  BackendInterface
     {
         Storage.delshieldFile(shieldword,context);
     }
+    public List<String> getShiledWord(Context context)
+    {
+        return Storage.getShieldWords(context);
+    }
     public void setPicturesDisplay(int type,Context context)
     {
         ConfigI.Save("PicturesDisplay",Integer.toString(type),context);
