@@ -31,7 +31,10 @@ public class LTLActivityTest
         BackendInterface inter=new BackendInter();
         try
         {
-            Intent downloadIntent = new Intent(mainActivity,BaikeWebActivity.class);
+           NewsTitle title=inter.getNewsTitle(1,10,1,mainActivity);
+
+           System.out.println("---------------\n");
+            title=inter.getNewsTitle(1,10,2,mainActivity);
 
         }catch (Exception e)
         {
