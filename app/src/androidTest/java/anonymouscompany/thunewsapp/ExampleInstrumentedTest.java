@@ -1,6 +1,7 @@
 package anonymouscompany.thunewsapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -17,10 +18,13 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void useAppContext() throws Exception {
+    public void useAppContext() throws Exception
+    {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-
+        Intent intent = new Intent(appContext,BaikeWebActivity.class);
+        intent.putExtra("keyword","蒋介石");
+        appContext.startActivity(intent);
         assertEquals("anonymouscompany.thunewsapp", appContext.getPackageName());
     }
 }

@@ -1,5 +1,6 @@
 package anonymouscompany.thunewsapp;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 
 import org.junit.Assert;
@@ -30,8 +31,8 @@ public class LTLActivityTest
         BackendInterface inter=new BackendInter();
         try
         {
-            String str=inter.getRandPictures("北京");
-            System.out.println(str);
+            Intent downloadIntent = new Intent(mainActivity,BaikeWebActivity.class);
+
         }catch (Exception e)
         {
             System.out.print("No\n");
