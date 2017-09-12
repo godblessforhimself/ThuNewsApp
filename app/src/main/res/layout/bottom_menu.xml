@@ -71,11 +71,11 @@
         <ImageView
             android:id="@+id/bmenu_img3"
             android:layout_width="50dp"
-            android:layout_height="30dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="0dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/refresh" />
+            android:src="@drawable/lights" />
 
     </LinearLayout>
 
@@ -93,7 +93,7 @@
             android:layout_gravity="center"
             android:layout_margin="0dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/lights" />
+            android:src="@drawable/earth" />
 
         <TextView
             android:id="@+id/bmenu_text4"
