@@ -112,17 +112,6 @@ public class NewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        tts = (ImageView)findViewById(R.id.tts_button);
-        tts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mTts mtts = new mTts();
-                mtts.initEngine(NewsActivity.this,news.news_Content);
-                mtts.startSpeaking();
-
-            }
-        });
 
         ImageButton imagebutton = (ImageButton)findViewById(R.id.imageButton2);
         imagebutton.setOnClickListener(new View.OnClickListener() {
@@ -155,16 +144,6 @@ public class NewsActivity extends AppCompatActivity {
                 }
             }
         });
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
 
         new Thread(new Runnable() {
             @Override

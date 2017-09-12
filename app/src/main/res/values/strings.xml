@@ -18,8 +18,12 @@
     <string name="tag10">财经</string>
     <string name="tag11">健康</string>
     <string name="tag12">娱乐</string>
-    <string name="首页">首页</string>
-    <string name="发现">发现</string>
-    <string name="消息">消息</string>
+    <string name="首页">最新</string>
+    <string name="发现">收藏夹</string>
+    <string name="消息">推荐</string>
     <string name="我的">我的</string>
+    <string name="加入收藏">加入收藏</string>
+    <string name="播放">播放</string>
+    <string name="暂停">暂停</string>
+    <string name="分享">微博分享</string>
 </resources>
