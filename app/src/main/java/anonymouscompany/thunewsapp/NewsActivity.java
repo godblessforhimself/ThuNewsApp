@@ -218,6 +218,7 @@ public class NewsActivity extends AppCompatActivity {
                                 .placeholder(R.drawable.loading)
                                 .into(img);
                         showTip(pictures[0]);
+                        Log.d("Picture",pictures[0] + "newsid:" +news.news_ID);
                     }
 
                     //新闻列表图片加载
