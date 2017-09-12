@@ -42,7 +42,7 @@ dependencies {
     })
     //Note:sunflower是TTS模块的包，core是新浪微博模块的包
     compile files('libs/Sunflower.jar')
-    compile (name: 'core-4.1.0-openDefaultRelease', ext: 'aar')
+    compile(name: 'core-4.1.0-openDefaultRelease', ext: 'aar')
     compile 'com.android.support:appcompat-v7:26'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.code.gson:gson:2.8.1'

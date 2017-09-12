@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by LTL on 2017/9/8.
@@ -17,8 +19,13 @@ public class BackendInter implements  BackendInterface
     public  NewsTitle getNewsTitle(int page, int pagesize,int catagory, Context context) throws Exception
     {
         NewsTitle title;
-        String str=ReversedNews.getReversedNews(page,pagesize,catagory);
-        title=JasonClass.StringtoJson(str,NewsTitle.class);
+        try {
+            String str = ReversedNews.getReversedNews(page, pagesize, catagory);
+            title = JasonClass.StringtoJson(str, NewsTitle.class);
+        }catch (Exception e)
+        {
+            title=Storage.findTitle(context);
+        }
         for (int i=0;i<title.list.size();i++)
         {
             NewsText text = getNewsText(title.list.get(i).news_ID, context);
@@ -163,5 +170,22 @@ public class BackendInter implements  BackendInterface
     {
         return Integer.parseInt(ConfigI.load("Night Info",context));
     }
+    public String getRandPictures(String keyword)
+    {
+        try
+        {
+            String str = ReversedNews.getRandPicturs(keyword);
+            Pattern pattern=Pattern.compile("http://img.ivsky.com/img/tupian/t/.*?\\.jpg");
+            Matcher matcher=pattern.matcher(str);
+            while (matcher.find()) return matcher.group();
+        }catch (Exception e)
+        {
 
+        }
+        return "";
+    }
+    public String getBaiduBaike(String keyword)
+    {
+        return "https://baike.baidu.com/item/"+keyword;
+    }
 }

@@ -28,5 +28,7 @@ public interface BackendInterface
     void clearAllInfo(Context context);//清空缓存
     void setNight(int type, Context context);//保持夜间模式配置信息
     int getNight(Context context);//获得是否为夜间模式
+    String getRandPictures(String keyword);//获得推荐图片
+    String getBaiduBaike(String keyword);//获得百度百科链接
 }
 

@@ -1,5 +1,6 @@
 package anonymouscompany.thunewsapp;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 
 import org.junit.Assert;
@@ -30,16 +31,7 @@ public class LTLActivityTest
         BackendInterface inter=new BackendInter();
         try
         {
-            NewsTitle title=inter.getNewsTitle(1,3,0,mainActivity);
-            for (int i=0;i<title.list.size();i++)
-                System.out.println(title.list.get(i).news_ID);
-            System.out.println();
-            inter.addCollectionNews(inter.getNewsText(title.list.get(0).news_ID,mainActivity),mainActivity);
-            inter.addCollectionNews(inter.getNewsText(title.list.get(2).news_ID,mainActivity),mainActivity);
-            inter.addCollectionNews(inter.getNewsText(title.list.get(0).news_ID,mainActivity),mainActivity);
-            title=inter.getCollectionNews(mainActivity);
-            for (int i=0;i<title.list.size();i++)
-                System.out.println(title.list.get(i).news_ID);
+            Intent downloadIntent = new Intent(mainActivity,BaikeWebActivity.class);
 
         }catch (Exception e)
         {
