@@ -30,18 +30,8 @@ public class LTLActivityTest
         BackendInterface inter=new BackendInter();
         try
         {
-            NewsTitle title=inter.getNewsTitle(1,3,0,mainActivity);
-            for (int i=0;i<title.list.size();i++)
-                System.out.println(title.list.get(i).news_ID);
-            System.out.println();
-            inter.addCollectionNews(inter.getNewsText(title.list.get(0).news_ID,mainActivity),mainActivity);
-            inter.addCollectionNews(inter.getNewsText(title.list.get(2).news_ID,mainActivity),mainActivity);
-            inter.addCollectionNews(inter.getNewsText(title.list.get(0).news_ID,mainActivity),mainActivity);
-            inter.
-            title=inter.getCollectionNews(mainActivity);
-            for (int i=0;i<title.list.size();i++)
-                System.out.println(title.list.get(i).news_ID);
-
+            String str=inter.getRandPictures("北京");
+            System.out.println(str);
         }catch (Exception e)
         {
             System.out.print("No\n");

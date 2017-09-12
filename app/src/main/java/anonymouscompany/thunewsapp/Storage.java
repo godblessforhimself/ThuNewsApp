@@ -156,6 +156,27 @@ public class Storage
         scanf.close();
         return null;
     }
+    public static  NewsTitle findTitle(Context context)
+    {
+        try
+        {
+            File file = new File(context.getFilesDir(), newsTextfile);
+            Scanner scanf=new Scanner(new FileInputStream(file));
+            NewsTitle title=new NewsTitle();
+            while (scanf.hasNext())
+            {
+                String str=scanf.nextLine();
+                NewsText text=JasonClass.StringtoJson(str,NewsText.class);
+                title.list.addAll(new NewsTitle(text).list);
+            }
+            scanf.close();
+            return title;
+        }catch (Exception e)
+        {
+
+        }
+        return null;
+    }
     public static NewsTitle findCollectionNews(Context context)
     {
         NewsTitle title=new NewsTitle();
