@@ -184,5 +184,8 @@ public class BackendInter implements  BackendInterface
         }
         return "";
     }
-
+    public String getBaiduBaike(String keyword)
+    {
+        return "https://baike.baidu.com/item/"+keyword;
+    }
 }
