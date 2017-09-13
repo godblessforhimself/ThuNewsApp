@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -43,6 +44,7 @@ public class NewsActivity extends AppCompatActivity {
     mScrollView middle;
     ExpandableListView keyword;
     FloatingActionButton fab;
+    long timer = 0;
     boolean collected = false;
     boolean recommend = true;
     boolean fullscreen = false;
@@ -56,6 +58,7 @@ public class NewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //先做一个加载界面
         setContentView(R.layout.loading);
+
         showTip("正在加载");
         handler = new Handler()  {
             @Override
@@ -156,7 +159,6 @@ public class NewsActivity extends AppCompatActivity {
                 if (!pictures[0].equals(""))
                 {
                     shareImgUrl = pictures[0];
-                    showTip(pictures[0]);
                     recommend = false;
                 }
                 //新闻列表图片加载
@@ -187,7 +189,10 @@ public class NewsActivity extends AppCompatActivity {
         middle = (mScrollView) findViewById(R.id.middle);
         bottom = (LinearLayout) findViewById(R.id.news_menu);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
@@ -212,7 +217,28 @@ public class NewsActivity extends AppCompatActivity {
         middle.setOnScrollListener(new mScrollView.OnScrollChangedListener() {
             @Override
             public void onScrollChanged(int x, int y, int oldX, int oldY) {
-
+                int diff = y - oldY;
+                //忽略扰动
+                if (diff < 10 && diff > -10)
+                {
+                    return;
+                }
+                long thistime = System.currentTimeMillis();
+                if (thistime - timer < 1000)
+                {
+                    timer = thistime;
+                    return;
+                }
+                if (fullscreen)
+                {
+                    timer = thistime;
+                    return;
+                }
+                timer = thistime;
+                if (diff > 10)
+                {
+                    //fullScreen(true);
+                }
             }
         });
         fab.setOnClickListener(new View.OnClickListener() {

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/news_main"
+    android:layout_width="match_parent"
 
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,10 +15,10 @@
             android:id="@+id/news_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:orientation="vertical"
-            android:layout_alignParentLeft="true">
+            android:orientation="vertical">
 
             <include layout="@layout/header_news"></include>
         </LinearLayout>
@@ -26,11 +27,11 @@
             android:id="@+id/news_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/news_header"
             android:layout_alignStart="@+id/news_header"
             android:layout_below="@+id/news_header"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_alignLeft="@+id/news_header">
+            android:orientation="vertical">
 
             <anonymouscompany.thunewsapp.mScrollView
                 android:id="@+id/middle"
