@@ -8,8 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,19 +27,18 @@ public class BackendInter implements  BackendInterface
             {
                 String str = ReversedNews.getReversedNews(page, pagesize, catagory);
                 title = JasonClass.StringtoJson(str, NewsTitle.class);
-             }else {
+             }else
+                 {
                 title=Storage.findTitle(context);
             }
             for (int i=0;i<title.list.size();i++)
             {
-                NewsText text = getNewsText(title.list.get(i).news_ID, context);
-                if (Storage.isShield(text, context))
+                if (Storage.isShield(title.list.get(i).news_Title, context))
                 {
                     title.list.remove(i);
                     i--;
                 }
             }
-
         }catch (IOException e)
         {
             Log.d("wc","catch");
@@ -51,7 +48,7 @@ public class BackendInter implements  BackendInterface
     public NewsTitle getNewsTitle(String news_ID,Context context) throws Exception
     {
         NewsText text=getNewsText(news_ID,context);
-        if(Storage.isShield(text,context))
+        if(Storage.isShield(text.news_Title,context))
         {
             Exception e=new Exception();
             throw e;
@@ -63,6 +60,7 @@ public class BackendInter implements  BackendInterface
     {
         char ch=12288;
         String newString="";
+        if (content.charAt(0)!=ch) newString+=ch+ch;
         int i=0;
         while (i<content.length())
         {
@@ -165,20 +163,18 @@ public class BackendInter implements  BackendInterface
         NewsTitle title=JasonClass.StringtoJson(str,NewsTitle.class);
         for (int i=0;i<title.list.size();i++)
         {
-                NewsText text=getNewsText(title.list.get(i).news_ID,context);
-                if (Storage.isShield(text,context))
+                if (Storage.isShield(title.list.get(i).news_Title,context))
                 {
                     title.list.remove(i);
-                }
+                    i--;
+                } else Log.d("ltl",title.list.get(i).news_Title);
         }
         return title;
     }
     public NewsTitle likeNewsTitel(Context context) throws Exception
     {
-
-        NewsTitle title=getNewsTitle(2,500,0,context);
-        title.list.addAll(getNewsTitle(3,500,0,context).list);
-        title.list.addAll(getNewsTitle(4,500,0,context).list);
+        NewsTitle title=getNewsTitle(5,100,0,context);
+        Log.d("ltl","wc");
         for (int i=0;i<title.list.size();i++)
         {
             NewsText text=getNewsText(title.list.get(i).news_ID,context);
@@ -198,11 +194,7 @@ public class BackendInter implements  BackendInterface
                 return (int) (a.score - b.score);
             }
         });
-        NewsTitle ans=new NewsTitle();
-        int size=300;
-        for (int i=0;i<size;i++)
-            ans.list.add(title.list.get(i));
-        return ans;
+        return title;
     }
     public void clearAllInfo(Context context)
     {
@@ -226,7 +218,6 @@ public class BackendInter implements  BackendInterface
                 Pattern pattern = Pattern.compile("http://img.ivsky.com/img/tupian/t/.*?\\.jpg");
                 Matcher matcher = pattern.matcher(str);
                 while (matcher.find())return matcher.group();
-
             }
         }catch (Exception e)
         {
