@@ -3,6 +3,7 @@ package anonymouscompany.thunewsapp;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,24 +20,29 @@ import java.util.regex.Pattern;
 
 public class BackendInter implements  BackendInterface
 {
+
     public  NewsTitle getNewsTitle(int page, int pagesize,int catagory, Context context) throws Exception
     {
-        NewsTitle title;
+        NewsTitle title=null;
         try {
-            String str = ReversedNews.getReversedNews(page, pagesize, catagory);
-            title = JasonClass.StringtoJson(str, NewsTitle.class);
-        }catch (Exception e)
-        {
-            title=Storage.findTitle(context);
-        }
-        for (int i=0;i<title.list.size();i++)
-        {
-            NewsText text = getNewsText(title.list.get(i).news_ID, context);
-            if (Storage.isShield(text, context))
+            if (ReversedNews.isConnection(context))
             {
-                title.list.remove(i);
-                i--;
+                Log.d("wc","isConnection");
+                String str = ReversedNews.getReversedNews(page, pagesize, catagory);
+                title = JasonClass.StringtoJson(str, NewsTitle.class);
+            }else title=Storage.findTitle(context);
+            for (int i=0;i<title.list.size();i++)
+            {
+                NewsText text = getNewsText(title.list.get(i).news_ID, context);
+                if (Storage.isShield(text, context))
+                {
+                    title.list.remove(i);
+                    i--;
+                }
             }
+        }catch (IOException e)
+        {
+            Log.d("wc","catch");
         }
         return title;
     }
@@ -77,6 +83,10 @@ public class BackendInter implements  BackendInterface
         if (!oncesee.equals("0")) text=Storage.findText(news_ID,context);
         else
         {
+            if (!ReversedNews.isConnection(context))
+            {
+                throw  new Exception();
+            }
             String str=ReversedNews.getReversedNewsText(news_ID);
             text=JasonClass.StringtoJson(str,NewsText.class);
         }
@@ -145,6 +155,10 @@ public class BackendInter implements  BackendInterface
     }
     public NewsTitle searchNewsTitel(String keyword,int page, int pagesize, int category,Context context) throws Exception
     {
+        if (!ReversedNews.isConnection(context))
+        {
+            throw new Exception();
+        }
         String str=ReversedNews.getReversedSearchNews(keyword,page,pagesize,category);
         NewsTitle title=JasonClass.StringtoJson(str,NewsTitle.class);
         for (int i=0;i<title.list.size();i++)
@@ -159,8 +173,9 @@ public class BackendInter implements  BackendInterface
     }
     public NewsTitle likeNewsTitel(Context context) throws Exception
     {
-        NewsTitle title=getNewsTitle(2,100,0,context);
-        Log.d("wc","finish");
+        NewsTitle title=getNewsTitle(2,500,0,context);
+        title.list.addAll(getNewsTitle(3,500,0,context).list);
+        title.list.addAll(getNewsTitle(4,500,0,context).list);
         for (int i=0;i<title.list.size();i++)
         {
             NewsText text=getNewsText(title.list.get(i).news_ID,context);
@@ -180,16 +195,15 @@ public class BackendInter implements  BackendInterface
                 return (int) (a.score - b.score);
             }
         });
-
-        return title;
+        NewsTitle ans=new NewsTitle();
+        int size=300;
+        for (int i=0;i<size;i++)
+            ans.list.add(title.list.get(i));
+        return ans;
     }
     public void clearAllInfo(Context context)
     {
         Storage.clearAllInfo(context);
-    }
-    public void getNewsPictures()
-    {
-
     }
     public void setNight(int type, Context context)
     {
@@ -197,7 +211,7 @@ public class BackendInter implements  BackendInterface
     }
     public int getNight(Context context)
     {
-        return Integer.parseInt(ConfigI.load("Night Info",context));
+        return Integer.parseInt(ConfigI.load("NightInfo",context));
     }
     public String getRandPictures(List<NewsText.Keyword> keywords)
     {

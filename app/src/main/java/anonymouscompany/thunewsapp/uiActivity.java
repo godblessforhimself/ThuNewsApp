@@ -14,6 +14,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +49,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_NO;
+import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES;
 
 public class uiActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
     private static BackendInter news = new BackendInter();
@@ -122,6 +126,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
+        addNews();
     }
     Handler handler = new Handler() {
         @Override
@@ -225,7 +230,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 }, 1000);
             }
         });
-        addNews();
         LinearLayout blay1 = (LinearLayout) findViewById(R.id.blay1);
         blay1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,8 +266,14 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             @Override
             public void onClick(View view) {
                 int d_n = news.getNight(uiActivity.this);
-                d_n = d_n ^1;
+                if (d_n == MODE_NIGHT_YES) {
+                    d_n = MODE_NIGHT_NO;
+                } else {
+                    d_n = MODE_NIGHT_YES;
+                }
                 news.setNight(d_n, uiActivity.this);
+                AppCompatDelegate.setDefaultNightMode(news.getNight(uiActivity.this));
+                recreate();
             }
         });
 
@@ -355,6 +365,8 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
             }
         });
+
+        AppCompatDelegate.setDefaultNightMode(news.getNight(uiActivity.this));
     }
 
     @Override
@@ -364,6 +376,9 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         if (query.equals("")) {
             issearching = 0;
             currentPage--;
+            if (currentPage ==0) {
+                currentPage = 1;
+            }
             if (mSearchView != null) {
                 // 得到输入管理对象
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -389,6 +404,9 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             currentPage--;
         } else {
             issearching = 1;
+        }
+        if (currentPage ==0) {
+            currentPage = 1;
         }
         if (mSearchView != null) {
             // 得到输入管理对象
@@ -440,8 +458,8 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 title.setTextColor(Color.GRAY);
                 intro.setTextColor(Color.GRAY);
             } else {
-                title.setTextColor(Color.BLACK);
-                intro.setTextColor(Color.BLACK);
+                title.setTextColor(index.getTextColors());
+                intro.setTextColor(index.getTextColors());
             }
             //新闻列表图片加载
             boolean needRecommend = true;
@@ -496,8 +514,8 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         title.setTextColor(Color.GRAY);
                         intro.setTextColor(Color.GRAY);
                     } else {
-                        title.setTextColor(Color.BLACK);
-                        intro.setTextColor(Color.BLACK);
+                        title.setTextColor(index.getTextColors());
+                        intro.setTextColor(index.getTextColors());
                     }
                 } else {
                     showTip((String)msg.obj);

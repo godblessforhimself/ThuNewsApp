@@ -1,5 +1,10 @@
 package anonymouscompany.thunewsapp;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -59,7 +64,6 @@ public class ReversedNews //连接服务器
     }
     static public String getRandPicturs(String keyword) throws  IOException
     {
-
         URL website = new URL("http://www.ivsky.com/search.php?q="+keyword);
         HttpURLConnection con = (HttpURLConnection)website.openConnection();
         InputStreamReader in = new InputStreamReader(con.getInputStream(),"utf-8");
@@ -70,6 +74,11 @@ public class ReversedNews //连接服务器
             result += response;
         }
         return result;
+    }
+    static boolean isConnection(Context context)
+    {
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo().isAvailable();
     }
 }
 
