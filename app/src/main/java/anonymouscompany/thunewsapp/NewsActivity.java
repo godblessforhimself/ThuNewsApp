@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -128,11 +129,11 @@ public class NewsActivity extends AppCompatActivity {
                 showTip("图片Url:" + shareImgUrl + "from:" + (recommend ? "推荐算法" : "详情图片"));
             }
         };
+        bi = new BackendInter();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    bi = new BackendInter();
                     news = bi.getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
                     Message msg = new Message();
                     msg.what = loadSuccess;
@@ -145,6 +146,9 @@ public class NewsActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+        //AppCompatDelegate.setDefaultNightMode(bi.getNight(NewsActivity.this));
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
     }
     Runnable getPicture = new Runnable() {
@@ -186,10 +190,12 @@ public class NewsActivity extends AppCompatActivity {
         middle = (mScrollView) findViewById(R.id.middle);
         bottom = (LinearLayout) findViewById(R.id.news_menu);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        /*
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        */
 
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
@@ -238,6 +244,7 @@ public class NewsActivity extends AppCompatActivity {
                 }
             }
         });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
