@@ -431,7 +431,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             id = it.news_ID;
             title.setText(it.news_Title);
             intro.setText(it.news_Intro);
-            tag.setText(it.newsClassTag);
+            tag.setText("# "+it.newsClassTag);
             people.setText(it.news_Author);
             img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
 
