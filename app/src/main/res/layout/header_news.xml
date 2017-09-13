@@ -14,6 +14,8 @@
             style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="33dp"
             android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/timg" />
 
         <TextView
