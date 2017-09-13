@@ -24,8 +24,7 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:fontFamily="serif"
-        android:text="Content"
-        android:textColor="@android:color/black" />
+        android:text="Content" />
 
 
 </LinearLayout>
