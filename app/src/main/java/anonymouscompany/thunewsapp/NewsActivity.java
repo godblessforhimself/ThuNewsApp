@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -150,6 +151,7 @@ public class NewsActivity extends AppCompatActivity {
         }).start();
 
         AppCompatDelegate.setDefaultNightMode(bi.getNight(NewsActivity.this));
+
     }
     Runnable getPicture = new Runnable() {
         @Override
@@ -191,6 +193,13 @@ public class NewsActivity extends AppCompatActivity {
         bottom = (LinearLayout) findViewById(R.id.news_menu);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         baike = (FloatingActionButton) findViewById(R.id.baike);
+        ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
+        ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
