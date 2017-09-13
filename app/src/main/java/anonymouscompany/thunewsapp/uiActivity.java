@@ -51,7 +51,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class uiActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
     private static BackendInter news = new BackendInter();
     private RecyclerView recyclerView;
-    private List<NewsTitle.MyList> mNews, mNewsBackup;
+    private List<NewsTitle.MyList> mNews = new ArrayList<NewsTitle.MyList>(), mNewsBackup;
     private int newsNum, currentPage,pageSize;
 
     private HomeAdapter mAdapter;
@@ -107,8 +107,8 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
     public void init()
     {
-        mNews = new ArrayList<NewsTitle.MyList>();
-        newsNum = 0;
+
+        newsNum = mNews.size();
         currentPage = 1;
         pageSize = 10;
         mheader = LayoutInflater.from(this).inflate(R.layout.recyclerview_header,null,false);
@@ -174,127 +174,173 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
         }
     };
+    Runnable booting = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                mNews = news.getNewsTitle(1, 10, 0, uiActivity.this).list;
+
+                welcome.sendMessage(new Message());
+            } catch (Exception e) {
+                e.printStackTrace();
+                //在这里进入离线模式
+                Log.d("Exception","caught" + e.toString());
+            }
+        }
+    };
+    Handler welcome;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ui_main);
-        init();
-        getSupportActionBar().hide();
-        //上拉加载更多
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0 && !recyclerView.canScrollVertically(1))
-                {
-                    addNews();
-                }
-                if (dy * dy > 100)
-                {
-                    Glide.with(uiActivity.this).pauseRequests();
-                }
-                else
-                {
-                    Glide.with(uiActivity.this).resumeRequests();
-                }
-            }
-        });
+        setContentView(R.layout.welcome);
 
-        try {
-            mSearchView = (SearchView) findViewById(R.id.searchview);
-            mSearchView.setOnQueryTextListener(this);
-            mSearchView.setSubmitButtonEnabled(true);
-            mSearchView.setQueryHint("Search");
-        } catch (Exception ex) {
-            showTip(ex.toString());
-        }
-
-        mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
+        welcome = new Handler()
+        {
             @Override
-            public void onRefresh() {
-                //调用刷新
-                refresh();
-                mPullToRefreshView.postDelayed(new Runnable() {
+            public void handleMessage(Message msg)
+            {
+
+                setContentView(R.layout.ui_main);
+                showTip("Handle");
+                init();
+                getSupportActionBar().hide();
+                mAdapter.init(mNews);
+                mAdapter.notifyDataSetChanged();
+                //上拉加载更多
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
-                    //刷新结束调用run
-                    public void run() {
-                        showTip("Refresh finish...");
-                        mPullToRefreshView.setRefreshing(false);
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (dy > 0 && !recyclerView.canScrollVertically(1))
+                        {
+                            addNews();
+                        }
+                        if (dy * dy > 100)
+                        {
+                            Glide.with(uiActivity.this).pauseRequests();
+                        }
+                        else
+                        {
+                            Glide.with(uiActivity.this).resumeRequests();
+                        }
                     }
-                }, 1000);
-            }
-        });
-        addNews();
-        LinearLayout blay1 = (LinearLayout) findViewById(R.id.blay1);
-        blay1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
-                if (isfavourites == 1) {
-                    currentPage--;
-                    iv.setImageResource(R.drawable.favorite);
-                    isfavourites = 0;
-                }
-                mPullToRefreshView.setRefreshing(true);
-                refresh();
-            }
-        });
+                });
 
-        LinearLayout blay2 = (LinearLayout) findViewById(R.id.blay2);
-        blay2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
-                if (isfavourites == 1) {
-                    currentPage--;
-                    iv.setImageResource(R.drawable.favorite);
-                } else {
-                    iv.setImageResource(R.drawable.favorite_y);
-                }
-                isfavourites = isfavourites ^1;
-                refresh();
-            }
-        });
-
-        LinearLayout blay3 = (LinearLayout) findViewById(R.id.blay3);
-        blay3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int d_n = news.getNight(uiActivity.this);
-                d_n = d_n ^1;
-                news.setNight(d_n, uiActivity.this);
-            }
-        });
-
-        LinearLayout blay4 = (LinearLayout) findViewById(R.id.blay4);
-        blay4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
-                if (isfavourites == 1) {
-                    mNews.clear();
-                    iv.setImageResource(R.drawable.favorite);
-                    isfavourites = 0;
+                try {
+                    mSearchView = (SearchView) findViewById(R.id.searchview);
+                    mSearchView.setOnQueryTextListener(uiActivity.this);
+                    mSearchView.setSubmitButtonEnabled(true);
+                    mSearchView.setQueryHint("Search");
+                } catch (Exception ex) {
+                    showTip(ex.toString());
                 }
 
-                mPullToRefreshView.setRefreshing(true);
+                mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        //调用刷新
+                        refresh();
+                        mPullToRefreshView.postDelayed(new Runnable() {
+                            @Override
+                            //刷新结束调用run
+                            public void run() {
+                                showTip("Refresh finish...");
+                                mPullToRefreshView.setRefreshing(false);
+                            }
+                        }, 1000);
+                    }
+                });
+                LinearLayout blay1 = (LinearLayout) findViewById(R.id.blay1);
+                blay1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
+                        if (isfavourites == 1) {
+                            currentPage--;
+                            iv.setImageResource(R.drawable.favorite);
+                            isfavourites = 0;
+                        }
+                        mPullToRefreshView.setRefreshing(true);
+                        refresh();
+                    }
+                });
 
+                LinearLayout blay2 = (LinearLayout) findViewById(R.id.blay2);
+                blay2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
+                        if (isfavourites == 1) {
+                            currentPage--;
+                            iv.setImageResource(R.drawable.favorite);
+                        } else {
+                            iv.setImageResource(R.drawable.favorite_y);
+                        }
+                        isfavourites = isfavourites ^1;
+                        refresh();
+                    }
+                });
+
+                LinearLayout blay3 = (LinearLayout) findViewById(R.id.blay3);
+                blay3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int d_n = news.getNight(uiActivity.this);
+                        d_n = d_n ^1;
+                        news.setNight(d_n, uiActivity.this);
+                    }
+                });
+
+                LinearLayout blay4 = (LinearLayout) findViewById(R.id.blay4);
+                blay4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
+                        if (isfavourites == 1) {
+                            mNews.clear();
+                            iv.setImageResource(R.drawable.favorite);
+                            isfavourites = 0;
+                        }
+
+                        mPullToRefreshView.setRefreshing(true);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                refreshoradd = REFRESH;
+                                Message msg = new Message();
+                                Bundle data = new Bundle();
+                                List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
+                                try{
+                                    suggestlock.lock();
+                                    e.addAll(suggest);
+                                    suggestlock.unlock();
+                                    data.putParcelableArrayList("news",(ArrayList)e);
+                                    msg.setData(data);
+                                    msg.what = 1;
+                                    handler.sendMessage(msg);
+
+                                    if (suggestlock.tryLock()) {
+                                        suggest.clear();
+                                        suggest.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
+                                        suggestlock.unlock();
+                                    }
+                                } catch (Exception ex)
+                                {
+                                    Log.d("exception",ex.toString());
+                                    msg.what = 0;
+                                    msg.obj = ex.toString();
+                                    handler.sendMessage(msg);
+                                }
+                            }
+                        }).start();
+                    }
+                });
+                //suggestlock.unlock();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        refreshoradd = REFRESH;
-                        Message msg = new Message();
-                        Bundle data = new Bundle();
-                        List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
                         try{
-                            suggestlock.lock();
-                            e.addAll(suggest);
-                            suggestlock.unlock();
-                            data.putParcelableArrayList("news",(ArrayList)e);
-                            msg.setData(data);
-                            msg.what = 1;
-                            handler.sendMessage(msg);
-
                             if (suggestlock.tryLock()) {
                                 suggest.clear();
                                 suggest.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
@@ -302,62 +348,47 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                             }
                         } catch (Exception ex)
                         {
-                            Log.d("exception",ex.toString());
-                            msg.what = 0;
-                            msg.obj = ex.toString();
-                            handler.sendMessage(msg);
                         }
                     }
                 }).start();
-            }
-        });
-        //suggestlock.unlock();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    if (suggestlock.tryLock()) {
-                        suggest.clear();
-                        suggest.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
-                        suggestlock.unlock();
+
+
+                LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
+                blay5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(uiActivity.this, SettingsActivity.class);
+                        startActivity(intent);
                     }
-                } catch (Exception ex)
-                {
-                }
+                });
+
+                TabLayout tl = (TabLayout) findViewById(R.id.headTab);
+                tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        cate = tab.getPosition();
+                        //showTip(new Integer(cate).toString());
+                        mNews.clear();
+                        currentPage = 1;
+                        refresh();
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
             }
-        }).start();
+        };
+        new Thread(booting).start();
+        showTip("Boot");
+        //addNews();
 
-
-        LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
-        blay5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(uiActivity.this, SettingsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        TabLayout tl = (TabLayout) findViewById(R.id.headTab);
-        tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                cate = tab.getPosition();
-                //showTip(new Integer(cate).toString());
-                mNews.clear();
-                currentPage = 1;
-                refresh();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
     }
 
     @Override
@@ -462,6 +493,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
         public void onClick(View v) {
             //showTip(id);
+            Glide.with(uiActivity.this).pauseRequests();
             new Thread(opennews).start();
         }
 
