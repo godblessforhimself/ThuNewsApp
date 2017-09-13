@@ -33,7 +33,7 @@ public class LTLActivityTest
         BackendInter inter=new BackendInter();
         try
         {
-            NewsTitle title=inter.getNewsTitle(11,10,0,mainActivity);
+            NewsTitle title=inter.likeNewsTitel(mainActivity);
             System.out.println(title.list.size());
         }catch (Exception e)
         {

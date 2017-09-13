@@ -27,13 +27,10 @@ public class BackendInter implements  BackendInterface
         try {
             if (ReversedNews.isConnection(context))
             {
-                Log.d("LTL","is");
                 String str = ReversedNews.getReversedNews(page, pagesize, catagory);
                 title = JasonClass.StringtoJson(str, NewsTitle.class);
              }else {
-                Log.d("LTL","not");
                 title=Storage.findTitle(context);
-                Log.d("LTL",Integer.toString(title.list.size()));
             }
             for (int i=0;i<title.list.size();i++)
             {
@@ -44,6 +41,7 @@ public class BackendInter implements  BackendInterface
                     i--;
                 }
             }
+
         }catch (IOException e)
         {
             Log.d("wc","catch");
@@ -69,7 +67,7 @@ public class BackendInter implements  BackendInterface
         while (i<content.length())
         {
             int j=i;
-            while (content.charAt(j)==ch&&j<content.length()) j++;
+            while (j<content.length()&&content.charAt(j)==ch) j++;
             if (j-i>=2&&i!=0)
             {
                 newString+="\n"+ch+ch;
@@ -93,8 +91,8 @@ public class BackendInter implements  BackendInterface
             }
             String str=ReversedNews.getReversedNewsText(news_ID);
             text=JasonClass.StringtoJson(str,NewsText.class);
+            text.news_Content=cleanContent(text.news_Content);
         }
-        text.news_Content=cleanContent(text.news_Content);
         return text;
     }
     public NewsTitle getCollectionNews(Context context)
@@ -177,6 +175,7 @@ public class BackendInter implements  BackendInterface
     }
     public NewsTitle likeNewsTitel(Context context) throws Exception
     {
+
         NewsTitle title=getNewsTitle(2,500,0,context);
         title.list.addAll(getNewsTitle(3,500,0,context).list);
         title.list.addAll(getNewsTitle(4,500,0,context).list);

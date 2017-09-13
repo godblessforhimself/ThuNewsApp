@@ -131,14 +131,14 @@ public class Storage
         return list;
     }
     public static boolean isShield(NewsText text,Context context) throws Exception
-    {/*
+    {
         List<String> shieldwords=getShieldWords(context);
         int n=text.seggedPListOfContent.size();
         int m=shieldwords.size();
         for (int i=0;i<n;i++)
             for (int j=0;j<m;j++)
                 if (shieldwords.get(j).equals(text.seggedPListOfContent.get(i)))
-                    return true;*/
+                    return true;
         return false;
     }
     public static  NewsText findText(String newsid,Context context) throws Exception
