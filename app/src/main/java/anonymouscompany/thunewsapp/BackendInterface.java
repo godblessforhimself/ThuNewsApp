@@ -30,7 +30,5 @@ public interface BackendInterface
     void setNight(int type, Context context);//保持夜间模式配置信息
     int getNight(Context context);//获得是否为夜间模式
     String getRandPictures(List<NewsText.Keyword> keywords);//获得推荐图片
-  //  String cleanContent(String news_Content);//整理正文
-
 }
 

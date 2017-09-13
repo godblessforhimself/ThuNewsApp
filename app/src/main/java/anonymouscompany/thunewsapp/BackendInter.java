@@ -1,6 +1,7 @@
 package anonymouscompany.thunewsapp;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -207,11 +208,13 @@ public class BackendInter implements  BackendInterface
                 String str = ReversedNews.getRandPicturs(keywords.get(i).word);
                 Pattern pattern = Pattern.compile("http://img.ivsky.com/img/tupian/t/.*?\\.jpg");
                 Matcher matcher = pattern.matcher(str);
-                while (matcher.find()) return matcher.group();
+                while (matcher.find())return matcher.group();
+
             }
         }catch (Exception e)
         {
 
+            Log.d("LTLWC","No");
         }
         return "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1193931039,3903211748&fm=27&gp=0.jpg";
     }

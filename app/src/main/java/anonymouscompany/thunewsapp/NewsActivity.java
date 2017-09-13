@@ -109,8 +109,7 @@ public class NewsActivity extends AppCompatActivity {
                     }
                     if (recommend)
                     {
-                        NewsText.Keyword word = news.Keywords.get(0);
-                        shareImgUrl = bi.getRandPictures(word.word);
+                        shareImgUrl = bi.getRandPictures(news.Keywords);
                     }
                     Glide.with(NewsActivity.this)
                             .load(shareImgUrl)
