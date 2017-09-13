@@ -50,6 +50,25 @@ public class BackendInter implements  BackendInterface
         NewsTitle title=new NewsTitle(text);
         return title;
     }
+    public String cleanContent(String content)
+    {
+        char ch=12288;
+        String newString="";
+        int i=0;
+        while (i<content.length())
+        {
+            int j=i;
+            while (content.charAt(j)==ch&&j<content.length()) j++;
+            if (j-i>=2&&i!=0)
+            {
+                newString+="\n"+ch+ch;
+                i=j;
+                continue;
+            }
+            newString+=content.charAt(i++);
+        }
+        return newString;
+    }
     public NewsText getNewsText(String news_ID,Context context) throws Exception
     {
         String oncesee=ConfigI.load(news_ID,context);
@@ -60,6 +79,7 @@ public class BackendInter implements  BackendInterface
             String str=ReversedNews.getReversedNewsText(news_ID);
             text=JasonClass.StringtoJson(str,NewsText.class);
         }
+        text.news_Content=cleanContent(text.news_Content);
         return text;
     }
     public NewsTitle getCollectionNews(Context context)

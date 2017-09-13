@@ -30,11 +30,11 @@ public class LTLActivityTest
     public void testBack()
     {
         MainActivity mainActivity = Robolectric.setupActivity(MainActivity.class);
-        BackendInterface inter=new BackendInter();
+        BackendInter inter=new BackendInter();
         try
         {
             NewsText text=inter.getNewsText("201608090432c815a85453c34d8ca43a591258701e9b",mainActivity);
-            System.out.println(inter.getRandPictures(text.Keywords));
+            System.out.println(inter.cleanContent(text.news_Content));
         }catch (Exception e)
         {
             System.out.print("No\n");

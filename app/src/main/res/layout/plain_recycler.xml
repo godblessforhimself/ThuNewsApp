@@ -49,24 +49,12 @@
             android:textStyle="italic" />
 
         <TextView
-            android:id="@+id/newsAuthor"
+            android:id="@+id/newsPeople"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:lineSpacingExtra="8sp"
-            android:text="author"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
-            android:textStyle="italic" />
-
-        <TextView
-            android:id="@+id/newsTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:lineSpacingExtra="8sp"
-            android:text="time"
+            android:text="People"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="12sp"

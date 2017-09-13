@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
@@ -42,6 +43,10 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class uiActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
     private static BackendInter news = new BackendInter();
@@ -59,9 +64,11 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     private static final int REFRESH = 1, ADD = 0;
     private String keyword = "";
     private int cate = 0;
+    private Lock suggestlock = new ReentrantLock();
     //是否正在网络通信
     private boolean isLoading = false;
     private SearchView mSearchView = null;
+    private List<NewsTitle.MyList> suggest = new ArrayList<>();
     private void showTip(String s)
     {
         Toast.makeText(uiActivity.this,s, Toast.LENGTH_SHORT).show();
@@ -137,6 +144,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 issearching++;
             }
             mAdapter.init(mNews);
+
             mAdapter.notifyDataSetChanged();
             showTip("News fetch finish, total num:" + newsNum);
         }
@@ -279,11 +287,19 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         Bundle data = new Bundle();
                         List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
                         try{
-                            e.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
+                            suggestlock.lock();
+                            e.addAll(suggest);
+                            suggestlock.unlock();
                             data.putParcelableArrayList("news",(ArrayList)e);
                             msg.setData(data);
                             msg.what = 1;
                             handler.sendMessage(msg);
+
+                            if (suggestlock.tryLock()) {
+                                suggest.clear();
+                                suggest.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
+                                suggestlock.unlock();
+                            }
                         } catch (Exception ex)
                         {
                             Log.d("exception",ex.toString());
@@ -295,6 +311,21 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 }).start();
             }
         });
+        //suggestlock.unlock();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    if (suggestlock.tryLock()) {
+                        suggest.clear();
+                        suggest.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
+                        suggestlock.unlock();
+                    }
+                } catch (Exception ex)
+                {
+                }
+            }
+        }).start();
 
 
         LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
@@ -379,7 +410,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
     class mViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-        TextView title,tag,author,time,intro,index;
+        TextView title,tag, people,intro,index;
         ImageView img;
         String id = "";
         public mViewHolder(View itemView) {
@@ -388,8 +419,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 return;
             title = itemView.findViewById(R.id.newsTitle);
             tag = itemView.findViewById(R.id.newsTag);
-            author = itemView.findViewById(R.id.newsAuthor);
-            time = itemView.findViewById(R.id.newsTime);
+            people = itemView.findViewById(R.id.newsPeople);
             intro = itemView.findViewById(R.id.newsInfo);
             index = itemView.findViewById(R.id.newsIndex);
             img = itemView.findViewById(R.id.imgres);
@@ -398,13 +428,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
         public void set(NewsTitle.MyList it)
         {
+            id = it.news_ID;
             title.setText(it.news_Title);
             intro.setText(it.news_Intro);
-            author.setText(it.news_Author);
             tag.setText(it.newsClassTag);
-            time.setText(it.news_Time);
+            people.setText(it.news_Author);
             img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
-            id = it.news_ID;
 
             if (itemView == mheader || itemView == mfooter)
                 return;
@@ -415,11 +444,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 title.setTextColor(Color.BLACK);
                 intro.setTextColor(Color.BLACK);
             }
-            title.setText(it.news_Title);
-            intro.setText(it.news_Intro);
-            author.setText(it.news_Author);
-            tag.setText(it.newsClassTag);
-            time.setText(it.news_Time);
             //新闻列表图片加载
             if (!it.news_Pictures.equals("") && news.getPicturesDisplay(uiActivity.this) == 0)
             {
@@ -434,7 +458,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         .placeholder(R.drawable.code)
                         .into(img);
             }
-            id = it.news_ID;
         }
 
         public void onClick(View v) {
