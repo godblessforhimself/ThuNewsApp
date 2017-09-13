@@ -15,7 +15,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +56,33 @@ public class NewsActivity extends AppCompatActivity {
     String sharemsg = "", shareImgUrl;
     Handler handler,shareHandler,pictureHandler;
     private static final int loadFailed = 0, loadSuccess = 1;
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        int action = event.getAction();
+        int keycode = event.getKeyCode();
+        if ((action == KeyEvent.ACTION_DOWN || action == KeyEvent.ACTION_UP) &&
+                (keycode == KeyEvent.KEYCODE_VOLUME_DOWN || keycode == KeyEvent.KEYCODE_VOLUME_UP))
+
+        return onKeyDown(keycode, event);
+
+        return super.dispatchKeyEvent(event);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                float size = text.getTextSize();
+                text.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 1);
+
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                float size2 = text.getTextSize();
+                text.setTextSize(TypedValue.COMPLEX_UNIT_PX, size2 + 1);
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +128,7 @@ public class NewsActivity extends AppCompatActivity {
                     });
                     text.setText(news.news_Content);
                     tag.setText(news.newsClassTag);
-                    time.setText(news.news_Time);
+                    time.setText(news.news_Time.substring(0,8));
                     author.setText(news.news_Author);
                     title.setText(news.news_Title);
                     if (bi.getPicturesDisplay(NewsActivity.this) == 0)
@@ -126,6 +155,7 @@ public class NewsActivity extends AppCompatActivity {
                 Glide.with(NewsActivity.this)
                         .load(shareImgUrl)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .skipMemoryCache(true)
                         .dontAnimate()
                         .placeholder(R.drawable.pig)
                         .into(img);

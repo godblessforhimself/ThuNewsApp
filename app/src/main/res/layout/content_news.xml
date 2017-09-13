@@ -24,7 +24,8 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:text="Content"
-        android:textAppearance="@style/TextAppearance.AppCompat" />
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp" />
 
 
 </LinearLayout>

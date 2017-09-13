@@ -485,6 +485,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     Glide.with(uiActivity.this)
                             .load(pictures[0])
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .skipMemoryCache(true)
                             .dontAnimate()
                             .placeholder(R.drawable.elephant)
                             .into(img);
@@ -503,6 +504,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         Glide.with(uiActivity.this)
                                 .load(url)
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .skipMemoryCache(true)
                                 .dontAnimate()
                                 .placeholder(R.drawable.elephant)
                                 .into(img);
