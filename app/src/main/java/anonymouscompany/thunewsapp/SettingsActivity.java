@@ -234,7 +234,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             showTip("clearing");
             new BackendInter().clearAllInfo(context);
-            startActivity(new Intent(getActivity(), SettingsActivity.class));
+            startActivity(new Intent(getActivity(), uiActivity.class));
         }
 
         @Override

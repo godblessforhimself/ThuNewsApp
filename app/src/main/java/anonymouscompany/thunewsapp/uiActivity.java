@@ -331,6 +331,10 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         suggest.clear();
                         suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
                         suggestlock.unlock();
+                        Message msg = new Message();
+                        msg.what = 0;
+                        msg.obj = "Suggedtions Completed";
+                        handler.sendMessage(msg);
                     }
                 } catch (Exception ex)
                 {
@@ -341,7 +345,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 }
             }
         }).start();
-
 
         LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
         blay5.setOnClickListener(new View.OnClickListener() {
