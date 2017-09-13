@@ -34,7 +34,7 @@ public class LTLActivityTest
         try
         {
             NewsTitle title=inter.getNewsTitle(11,10,0,mainActivity);
-            System.out.println("wc");
+            System.out.println(title.list.size());
         }catch (Exception e)
         {
             System.out.print("No\n");

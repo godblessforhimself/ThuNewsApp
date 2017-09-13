@@ -96,6 +96,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
     public void addNews()
     {
+        Log.d("UITEST","testttt");
         if (isfavourites == 1) {
             mNews.clear();
             mNews.addAll(news.getCollectionNews(uiActivity.this).list);

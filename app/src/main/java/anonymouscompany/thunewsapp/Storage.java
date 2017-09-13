@@ -1,6 +1,7 @@
 package anonymouscompany.thunewsapp;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -175,8 +176,9 @@ public class Storage
         }catch (Exception e)
         {
 
+            Log.d("ltl","rrr" + e.toString());
         }
-        return null;
+        return new NewsTitle();
     }
     public static NewsTitle findCollectionNews(Context context)
     {
