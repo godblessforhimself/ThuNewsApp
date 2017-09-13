@@ -154,6 +154,8 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
             mAdapter.notifyDataSetChanged();
             showTip("News fetch finish, total num:" + newsNum);
+            suggestlock.tryLock();
+            suggestlock.unlock();
         }
     };
     //所有runnable，非主线程都不能使用showtip等改变ui的函数，替代办法写到handler handleMessage中。
@@ -291,33 +293,33 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     iv.setImageResource(R.drawable.favorite);
                     isfavourites = 0;
                 }
+                if (suggestlock.tryLock()) {
+                    mPullToRefreshView.setRefreshing(true);
 
-                mPullToRefreshView.setRefreshing(true);
-
-                new Thread(new Runnable() {
-                    @Override
-                    public synchronized void run() {
-                        refreshoradd = REFRESH;
-                        Message msg = new Message();
-                        Bundle data = new Bundle();
-                        List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
-                        try{
-                            suggest.clear();
-                            suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
-                            e.addAll(suggest.subList(0, pageSize));
-                            data.putParcelableArrayList("news",(ArrayList)e);
-                            msg.setData(data);
-                            msg.what = 1;
-                            handler.sendMessage(msg);
-                        } catch (Exception ex)
-                        {
-                            Log.d("exception",ex.toString());
-                            msg.what = 0;
-                            msg.obj = ex.toString();
-                            handler.sendMessage(msg);
+                    new Thread(new Runnable() {
+                        @Override
+                        public synchronized void run() {
+                            refreshoradd = REFRESH;
+                            Message msg = new Message();
+                            Bundle data = new Bundle();
+                            List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
+                            try {
+                                suggest.clear();
+                                suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
+                                e.addAll(suggest.subList(0, pageSize));
+                                data.putParcelableArrayList("news", (ArrayList) e);
+                                msg.setData(data);
+                                msg.what = 1;
+                                handler.sendMessage(msg);
+                            } catch (Exception ex) {
+                                Log.d("exception", ex.toString());
+                                msg.what = 0;
+                                msg.obj = ex.toString();
+                                handler.sendMessage(msg);
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
             }
         });
 
