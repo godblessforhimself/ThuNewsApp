@@ -13,6 +13,8 @@ import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,15 +33,8 @@ public class LTLActivityTest
         BackendInterface inter=new BackendInter();
         try
         {
-            inter.addShiledWord("ltl",mainActivity);
-            inter.addShiledWord("jt",mainActivity);
-            List<String> word=inter.getShiledWord(mainActivity);
-            inter.delShiledWord("jt",mainActivity);
-            word=inter.getShiledWord(mainActivity);
-            for (int i=0;i<word.size();i++)
-            {
-                System.out.println(word.get(i));
-            }
+            NewsText text=inter.getNewsText("201608090432c815a85453c34d8ca43a591258701e9b",mainActivity);
+            System.out.println(inter.getRandPictures(text.Keywords));
         }catch (Exception e)
         {
             System.out.print("No\n");

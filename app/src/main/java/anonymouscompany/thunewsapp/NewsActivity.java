@@ -107,7 +107,7 @@ public class NewsActivity extends AppCompatActivity {
                         //新闻列表图片加载
                     }
                     if (recommend)
-                    {
+                    {/*
                         NewsText.Keyword word = news.Keywords.get(0);
                         Glide.with(NewsActivity.this)
                                 .load(bi.getRandPictures(word.word))
@@ -115,7 +115,7 @@ public class NewsActivity extends AppCompatActivity {
                                 .dontAnimate()
                                 .placeholder(R.drawable.code)
                                 .into(img);
-                        showTip("图片推荐算法，根据keyword="+word.word);
+                        showTip("图片推荐算法，根据keyword="+word.word);*/
                     }
                 }
             }
