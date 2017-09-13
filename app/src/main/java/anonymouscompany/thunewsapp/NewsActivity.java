@@ -1,6 +1,7 @@
 package anonymouscompany.thunewsapp;
 
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
@@ -39,7 +40,7 @@ public class NewsActivity extends AppCompatActivity {
     NewsText news;
     LinearLayout start,pause,share,collect;
     LinearLayout head,bottom;
-    ScrollView middle;
+    mScrollView middle;
     ExpandableListView keyword;
     FloatingActionButton fab;
     boolean collected = false;
@@ -48,7 +49,7 @@ public class NewsActivity extends AppCompatActivity {
     TextView title,tag,author,time,text;
     ImageView img;
     String sharemsg = "", shareImgUrl;
-    Handler handler,shareHandler;
+    Handler handler,shareHandler,pictureHandler;
     private static final int loadFailed = 0, loadSuccess = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,29 +97,9 @@ public class NewsActivity extends AppCompatActivity {
                     time.setText(news.news_Time);
                     author.setText(news.news_Author);
                     title.setText(news.news_Title);
-                    if (!news.news_Pictures.equals(""))
-                    {
-                        String[] pictures = news.news_Pictures.split(";");
-                        if (!pictures[0].equals(""))
-                        {
-                            shareImgUrl = pictures[0];
-                            showTip(pictures[0]);
-                            recommend = false;
-                        }
-                        //新闻列表图片加载
-                    }
-                    if (recommend)
-                    {
-                        NewsText.Keyword word = news.Keywords.get(0);
-                        shareImgUrl = bi.getRandPictures(word.word);
-                    }
-                    Glide.with(NewsActivity.this)
-                            .load(shareImgUrl)
-                            .fitCenter()
-                            .dontAnimate()
-                            .placeholder(R.drawable.pig)
-                            .into(img);
-                    showTip("图片Url:" + shareImgUrl + "from:" + (recommend ? "推荐算法" : "详情图片"));
+                    showTip("getPicture");
+                    new Thread(getPicture).start();
+
                 }
             }
         };
@@ -131,6 +112,20 @@ public class NewsActivity extends AppCompatActivity {
                 Bitmap map = msg.getData().getParcelable("bitmap");
                 wbshareInstance.setThumbImg(map);
                 wbshareInstance.shareMessage();
+            }
+        };
+        pictureHandler = new Handler()
+        {
+            @Override
+            public void handleMessage(Message msg)
+            {
+                Glide.with(NewsActivity.this)
+                        .load(shareImgUrl)
+                        .fitCenter()
+                        .dontAnimate()
+                        .placeholder(R.drawable.pig)
+                        .into(img);
+                showTip("图片Url:" + shareImgUrl + "from:" + (recommend ? "推荐算法" : "详情图片"));
             }
         };
         new Thread(new Runnable() {
@@ -152,7 +147,27 @@ public class NewsActivity extends AppCompatActivity {
         }).start();
 
     }
-
+    Runnable getPicture = new Runnable() {
+        @Override
+        public void run() {
+            if (!news.news_Pictures.equals(""))
+            {
+                String[] pictures = news.news_Pictures.split(";");
+                if (!pictures[0].equals(""))
+                {
+                    shareImgUrl = pictures[0];
+                    showTip(pictures[0]);
+                    recommend = false;
+                }
+                //新闻列表图片加载
+            }
+            if (recommend)
+            {
+                shareImgUrl = bi.getRandPictures(news.Keywords);
+            }
+            pictureHandler.sendMessage(new Message());
+        }
+    };
     void init()
     {
         wbshareInstance = new mWbshare();
@@ -169,7 +184,7 @@ public class NewsActivity extends AppCompatActivity {
         collect = (LinearLayout) findViewById(R.id.s3);
         share = (LinearLayout) findViewById(R.id.s4);
         head = (LinearLayout) findViewById(R.id.news_header);
-        middle = (ScrollView) findViewById(R.id.middle);
+        middle = (mScrollView) findViewById(R.id.middle);
         bottom = (LinearLayout) findViewById(R.id.news_menu);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
 
@@ -177,22 +192,39 @@ public class NewsActivity extends AppCompatActivity {
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
     private int ttsState = NOTINIT;
+    private void fullScreen(boolean full)
+    {
+        if (full)
+        {
+            head.setVisibility(View.GONE);
+            bottom.setVisibility(View.GONE);
+            fullscreen = true;
+        }
+        else
+        {
+            head.setVisibility(View.VISIBLE);
+            bottom.setVisibility(View.VISIBLE);
+            fullscreen = false;
+        }
+    }
     void setListeners()
     {
+        middle.setOnScrollListener(new mScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(int x, int y, int oldX, int oldY) {
+
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (fullscreen)
                 {
-                    head.setVisibility(View.VISIBLE);
-                    bottom.setVisibility(View.VISIBLE);
-                    fullscreen = false;
+                    fullScreen(false);
                 }
                 else
                 {
-                    head.setVisibility(View.GONE);
-                    bottom.setVisibility(View.GONE);
-                    fullscreen = true;
+                    fullScreen(true);
                 }
             }
         });

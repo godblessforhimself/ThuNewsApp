@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
@@ -31,7 +32,7 @@
             android:orientation="vertical"
             android:layout_alignLeft="@+id/news_header">
 
-            <ScrollView
+            <anonymouscompany.thunewsapp.mScrollView
                 android:id="@+id/middle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -40,7 +41,7 @@
                     layout="@layout/content_news"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-            </ScrollView>
+            </anonymouscompany.thunewsapp.mScrollView>
         </LinearLayout>
 
         <LinearLayout
