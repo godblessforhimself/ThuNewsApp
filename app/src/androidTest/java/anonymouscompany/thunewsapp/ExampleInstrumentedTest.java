@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,15 +17,22 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class ExampleInstrumentedTest
+{
     @Test
     public void useAppContext() throws Exception
     {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-        Intent intent = new Intent(appContext,BaikeWebActivity.class);
-        intent.putExtra("keyword","蒋介石");
-        appContext.startActivity(intent);
+        if (ReversedNews.isConnection(appContext))
+        {
+            Log.d("LTL","right");
+        }else
+        {
+
+            Log.d("LTL","??");
+        }
+
         assertEquals("anonymouscompany.thunewsapp", appContext.getPackageName());
     }
 }

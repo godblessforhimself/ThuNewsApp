@@ -1,6 +1,7 @@
 package anonymouscompany.thunewsapp;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;

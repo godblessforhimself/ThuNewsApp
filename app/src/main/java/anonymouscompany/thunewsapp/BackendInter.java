@@ -27,10 +27,14 @@ public class BackendInter implements  BackendInterface
         try {
             if (ReversedNews.isConnection(context))
             {
-                Log.d("wc","isConnection");
+                Log.d("LTL","is");
                 String str = ReversedNews.getReversedNews(page, pagesize, catagory);
                 title = JasonClass.StringtoJson(str, NewsTitle.class);
-            }else title=Storage.findTitle(context);
+             }else {
+                Log.d("LTL","not");
+                title=Storage.findTitle(context);
+                Log.d("LTL",Integer.toString(title.list.size()));
+            }
             for (int i=0;i<title.list.size();i++)
             {
                 NewsText text = getNewsText(title.list.get(i).news_ID, context);
@@ -44,6 +48,7 @@ public class BackendInter implements  BackendInterface
         {
             Log.d("wc","catch");
         }
+        Log.d("LTL","wc"+Integer.toString(title.list.size()));
         return title;
     }
     public NewsTitle getNewsTitle(String news_ID,Context context) throws Exception
