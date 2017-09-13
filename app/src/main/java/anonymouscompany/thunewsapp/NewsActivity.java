@@ -60,6 +60,7 @@ public class NewsActivity extends AppCompatActivity {
         setContentView(R.layout.loading);
 
         showTip("正在加载");
+        getSupportActionBar().hide();
         handler = new Handler()  {
             @Override
             public void handleMessage(Message msg)
