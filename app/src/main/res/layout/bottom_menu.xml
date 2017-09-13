@@ -4,17 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:layout_margin="5dp"
     android:alpha="50"
     android:background="@android:color/transparent"
     android:orientation="horizontal"
-    android:padding="2dp">
+    android:padding="0dp">
 
     <LinearLayout
         android:id="@+id/blay1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="2dp">
 
         <ImageView
             android:id="@+id/bmenu_img1"
@@ -39,9 +41,10 @@
     <LinearLayout
         android:id="@+id/blay2"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="2dp">
 
         <ImageView
             android:id="@+id/bmenu_img2"
@@ -64,8 +67,9 @@
 
     <LinearLayout
         android:id="@+id/blay3"
-        android:layout_width="30dp"
-        android:layout_height="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
@@ -84,9 +88,10 @@
     <LinearLayout
         android:id="@+id/blay4"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="2dp">
 
         <ImageView
             android:id="@+id/bmenu_img4"
@@ -110,9 +115,10 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/blay5"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="2dp">
 
         <ImageView
             android:id="@+id/bmenu_img5"
