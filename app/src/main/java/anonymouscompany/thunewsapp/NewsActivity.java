@@ -100,6 +100,8 @@ public class NewsActivity extends AppCompatActivity {
                     time.setText(news.news_Time);
                     author.setText(news.news_Author);
                     title.setText(news.news_Title);
+                    if (bi.getPicturesDisplay(NewsActivity.this) == 0)
+                    new Thread(getPicture).start();
                 }
             }
         };
@@ -186,10 +188,7 @@ public class NewsActivity extends AppCompatActivity {
         middle = (mScrollView) findViewById(R.id.middle);
         bottom = (LinearLayout) findViewById(R.id.news_menu);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
 
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
