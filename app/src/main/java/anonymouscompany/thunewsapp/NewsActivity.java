@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -129,11 +130,11 @@ public class NewsActivity extends AppCompatActivity {
                 showTip("图片Url:" + shareImgUrl + " from:" + (recommend ? "推荐算法" : "详情图片"));
             }
         };
+        bi = new BackendInter();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    bi = new BackendInter();
                     news = bi.getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
                     Message msg = new Message();
                     msg.what = loadSuccess;
@@ -147,6 +148,7 @@ public class NewsActivity extends AppCompatActivity {
             }
         }).start();
 
+        AppCompatDelegate.setDefaultNightMode(bi.getNight(NewsActivity.this));
     }
     Runnable getPicture = new Runnable() {
         @Override
