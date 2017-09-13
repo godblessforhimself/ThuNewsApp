@@ -216,7 +216,7 @@ public class BackendInter implements  BackendInterface
     }
     public int getNight(Context context)
     {
-        return Integer.parseInt(ConfigI.load("Night Info",context));
+        return Integer.parseInt(ConfigI.load("NightInfo",context));
     }
     public String getRandPictures(List<NewsText.Keyword> keywords)
     {
