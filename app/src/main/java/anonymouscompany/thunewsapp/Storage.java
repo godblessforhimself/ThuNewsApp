@@ -9,8 +9,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -118,7 +118,7 @@ public class Storage
     }
     public static List<String> getShieldWords(Context context)
     {
-        List<String> list=new LinkedList<String>();
+        List<String> list=new ArrayList<>();
         File file = new File(context.getFilesDir(), shieldwordsfile);
         try {
             Scanner scanf = new Scanner(new FileInputStream(file));
@@ -130,14 +130,13 @@ public class Storage
         }
         return list;
     }
-    public static boolean isShield(NewsText text,Context context) throws Exception
+    public static boolean isShield(String news,Context context) throws Exception
     {
         List<String> shieldwords=getShieldWords(context);
-        int n=text.seggedPListOfContent.size();
+        news=news.toLowerCase();
         int m=shieldwords.size();
-        for (int i=0;i<n;i++)
-            for (int j=0;j<m;j++)
-                if (shieldwords.get(j).equals(text.seggedPListOfContent.get(i)))
+        for (int i=0;i<m;i++)
+                if (news.indexOf(shieldwords.get(i).toLowerCase())!=-1)
                     return true;
         return false;
     }
