@@ -334,6 +334,10 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     }
                 } catch (Exception ex)
                 {
+                    Message msg = new Message();
+                    msg.what = 0;
+                    msg.obj = ex.toString();
+                    handler.sendMessage(msg);
                 }
             }
         }).start();
