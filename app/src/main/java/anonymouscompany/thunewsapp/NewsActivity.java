@@ -97,34 +97,6 @@ public class NewsActivity extends AppCompatActivity {
                     time.setText(news.news_Time);
                     author.setText(news.news_Author);
                     title.setText(news.news_Title);
-<<<<<<< HEAD
-                    if (!news.news_Pictures.equals(""))
-                    {
-                        String[] pictures = news.news_Pictures.split(";");
-                        if (!pictures[0].equals(""))
-                        {
-                            shareImgUrl = pictures[0];
-                            showTip(pictures[0]);
-                            recommend = false;
-                        }
-                        //新闻列表图片加载
-                    }
-                    if (recommend)
-                    {
-                        shareImgUrl = bi.getRandPictures(news.Keywords);
-                    }
-                    Glide.with(NewsActivity.this)
-                            .load(shareImgUrl)
-                            .fitCenter()
-                            .dontAnimate()
-                            .placeholder(R.drawable.pig)
-                            .into(img);
-                    showTip("图片Url:" + shareImgUrl + "from:" + (recommend ? "推荐算法" : "详情图片"));
-=======
-                    showTip("getPicture");
-                    new Thread(getPicture).start();
-
->>>>>>> e793358b6adfdeaf3f0da3deb2afef2e0f029b6b
                 }
             }
         };

@@ -160,7 +160,7 @@ public class BackendInter implements  BackendInterface
     public NewsTitle likeNewsTitel(Context context) throws Exception
     {
         NewsTitle title=getNewsTitle(2,100,0,context);
-
+        Log.d("wc","finish");
         for (int i=0;i<title.list.size();i++)
         {
             NewsText text=getNewsText(title.list.get(i).news_ID,context);
