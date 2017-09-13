@@ -35,7 +35,7 @@
         <activity
             android:name=".NewsActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight" />
+            android:parentActivityName=".uiActivity"/>
         <activity
             android:name=".BaikeWebActivity"
             android:exported="true" />
