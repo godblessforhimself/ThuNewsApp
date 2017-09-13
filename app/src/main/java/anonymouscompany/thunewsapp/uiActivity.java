@@ -163,12 +163,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         public void run() {
             Message msg = new Message();
             Bundle data = new Bundle();
-            List<NewsTitle.MyList> e;
+            List<NewsTitle.MyList> e = new ArrayList<>();
             try{
                 if (issearching == 0) {
-                    e = news.getNewsTitle(currentPage, pageSize, cate, uiActivity.this).list;
+                    e.addAll(news.getNewsTitle(currentPage, pageSize, cate, uiActivity.this).list);
                 } else {
-                    e = news.searchNewsTitel(keyword, issearching, pageSize, cate, uiActivity.this).list;
+                    e.addAll(news.searchNewsTitel(keyword, issearching, pageSize, cate, uiActivity.this).list);
                 }
                 data.putParcelableArrayList("news",(ArrayList)e);
                 msg.setData(data);
