@@ -71,13 +71,12 @@
             android:id="@+id/newsTag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:layout_marginRight="25dp"
             android:layout_weight="1"
             android:lineSpacingExtra="8sp"
             android:text="tag"
             android:textAlignment="textEnd"
-            android:layout_gravity="end"
-            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <TextView
@@ -90,7 +89,6 @@
             android:lineSpacingExtra="8sp"
             android:text="People"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
     </LinearLayout>
