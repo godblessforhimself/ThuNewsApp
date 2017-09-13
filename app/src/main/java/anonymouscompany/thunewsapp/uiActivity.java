@@ -161,6 +161,9 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     Runnable netWorkTask = new Runnable() {
         @Override
         public synchronized void run() {
+            if (!suggestlock.tryLock()) {
+                return;
+            }
             Message msg = new Message();
             Bundle data = new Bundle();
             List<NewsTitle.MyList> e = new ArrayList<>();
@@ -181,7 +184,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 msg.obj = ex.toString();
                 handler.sendMessage(msg);
             }
-
+            suggestlock.unlock();
         }
     };
     @Override
@@ -265,6 +268,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             }
         });
 
+        int d_n = news.getNight(uiActivity.this);
+        if ((d_n != MODE_NIGHT_YES)&&(d_n != MODE_NIGHT_NO)) {
+            d_n = MODE_NIGHT_NO;
+        }
+        news.setNight(d_n, uiActivity.this);
+
         LinearLayout blay3 = (LinearLayout) findViewById(R.id.blay3);
         blay3.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,60 +300,37 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     iv.setImageResource(R.drawable.favorite);
                     isfavourites = 0;
                 }
-
                 mPullToRefreshView.setRefreshing(true);
 
                 new Thread(new Runnable() {
                     @Override
                     public synchronized void run() {
+                        if (!suggestlock.tryLock()) {
+                            return;
+                        }
                         refreshoradd = REFRESH;
                         Message msg = new Message();
                         Bundle data = new Bundle();
                         List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
-                        try{
-                            suggestlock.lock();
+                        try {
+                            suggest.clear();
+                            suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
                             e.addAll(suggest.subList(0, pageSize));
-                            for (int i = 0; i < pageSize; i++) {
-                                suggest.remove(0);
-                            }
-                            suggestlock.unlock();
-                            data.putParcelableArrayList("news",(ArrayList)e);
+                            data.putParcelableArrayList("news", (ArrayList) e);
                             msg.setData(data);
                             msg.what = 1;
                             handler.sendMessage(msg);
-                        } catch (Exception ex)
-                        {
-                            Log.d("exception",ex.toString());
+                        } catch (Exception ex) {
+                            Log.d("exception", ex.toString());
                             msg.what = 0;
                             msg.obj = ex.toString();
                             handler.sendMessage(msg);
                         }
+                        suggestlock.unlock();
                     }
                 }).start();
             }
         });
-        new Thread(new Runnable() {
-            @Override
-            public synchronized void run() {
-                try{
-                    if (suggestlock.tryLock()) {
-                        suggest.clear();
-                        suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
-                        suggestlock.unlock();
-                        Message msg = new Message();
-                        msg.what = 0;
-                        msg.obj = "Suggedtions Completed";
-                        handler.sendMessage(msg);
-                    }
-                } catch (Exception ex)
-                {
-                    Message msg = new Message();
-                    msg.what = 0;
-                    msg.obj = ex.toString();
-                    handler.sendMessage(msg);
-                }
-            }
-        }).start();
 
         LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
         blay5.setOnClickListener(new View.OnClickListener() {

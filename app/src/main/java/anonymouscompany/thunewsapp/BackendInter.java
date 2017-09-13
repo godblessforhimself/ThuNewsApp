@@ -27,8 +27,7 @@ public class BackendInter implements  BackendInterface
             {
                 String str = ReversedNews.getReversedNews(page, pagesize, catagory);
                 title = JasonClass.StringtoJson(str, NewsTitle.class);
-             }else
-                 {
+             }else{
                 title=Storage.findTitle(context);
             }
             for (int i=0;i<title.list.size();i++)
@@ -41,8 +40,9 @@ public class BackendInter implements  BackendInterface
             }
         }catch (IOException e)
         {
-            Log.d("wc","catch");
+
         }
+        if (title==null) Log.d("ltl","gettitel");
         return title;
     }
     public NewsTitle getNewsTitle(String news_ID,Context context) throws Exception
@@ -60,7 +60,7 @@ public class BackendInter implements  BackendInterface
     {
         char ch=12288;
         String newString="";
-        if (content.charAt(0)!=ch) newString+=ch+ch;
+        if (content.charAt(0)!=ch) newString+="  ";
         int i=0;
         while (i<content.length())
         {
@@ -142,9 +142,14 @@ public class BackendInter implements  BackendInterface
         ConfigI.Save(text.news_ID,"1",context);
         for (int i=0;i<text.Keywords.size();i++)
         {
-
             double sorce=text.Keywords.get(i).score+Double.parseDouble(ConfigI.load(text.Keywords.get(i).word,context));
             ConfigI.Save(text.Keywords.get(i).word,Double.toString(sorce),context);
+            double max=Double.parseDouble(ConfigI.load("maxkeyword",context));
+            if (sorce>max)
+            {
+                ConfigI.Save("maxkeyword",Double.toString(sorce),context);
+                ConfigI.Save("LTL",text.Keywords.get(i).word,context);
+            }
         }
         Storage.addTextFile(text,context);
      }
@@ -167,14 +172,13 @@ public class BackendInter implements  BackendInterface
                 {
                     title.list.remove(i);
                     i--;
-                } else Log.d("ltl",title.list.get(i).news_Title);
+                }
         }
         return title;
     }
     public NewsTitle likeNewsTitel(Context context) throws Exception
     {
-        NewsTitle title=getNewsTitle(5,100,0,context);
-        Log.d("ltl","wc");
+       /* NewsTitle title=getNewsTitle(5,50,0,context);
         for (int i=0;i<title.list.size();i++)
         {
             NewsText text=getNewsText(title.list.get(i).news_ID,context);
@@ -194,7 +198,11 @@ public class BackendInter implements  BackendInterface
                 return (int) (a.score - b.score);
             }
         });
-        return title;
+
+        if (title==null) Log.d("ltl","gettitel2222");*/
+        String maxword=ConfigI.load("LTL",context);
+        Log.d("ltl",maxword);
+        return searchNewsTitel(maxword,2, 100, 0,context);
     }
     public void clearAllInfo(Context context)
     {
@@ -222,7 +230,6 @@ public class BackendInter implements  BackendInterface
         }catch (Exception e)
         {
 
-            Log.d("LTLWC","No");
         }
         return "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1193931039,3903211748&fm=27&gp=0.jpg";
     }
