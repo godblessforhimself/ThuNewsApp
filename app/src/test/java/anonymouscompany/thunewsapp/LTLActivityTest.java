@@ -33,8 +33,8 @@ public class LTLActivityTest
         BackendInter inter=new BackendInter();
         try
         {
-            NewsText text=inter.getNewsText("201608090432c815a85453c34d8ca43a591258701e9b",mainActivity);
-            System.out.println(inter.cleanContent(text.news_Content));
+            NewsTitle title=inter.getNewsTitle(11,10,0,mainActivity);
+            System.out.println("wc");
         }catch (Exception e)
         {
             System.out.print("No\n");

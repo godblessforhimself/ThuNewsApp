@@ -100,9 +100,6 @@ public class NewsActivity extends AppCompatActivity {
                     time.setText(news.news_Time);
                     author.setText(news.news_Author);
                     title.setText(news.news_Title);
-                    showTip("getPicture");
-                    new Thread(getPicture).start();
-
                 }
             }
         };
