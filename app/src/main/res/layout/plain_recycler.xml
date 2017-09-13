@@ -95,7 +95,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:textAlignment="textEnd"
-        android:textColor="@android:color/black"
         android:textSize="14sp"
         android:textStyle="bold" />
 
