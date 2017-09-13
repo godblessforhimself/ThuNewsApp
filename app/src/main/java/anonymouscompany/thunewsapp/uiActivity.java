@@ -131,7 +131,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
     Handler handler = new Handler() {
         @Override
-        public void handleMessage(Message msg) {
+        public synchronized void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
                 showTip((String) msg.obj);
@@ -160,7 +160,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     //runnable结束调用handler更新ui
     Runnable netWorkTask = new Runnable() {
         @Override
-        public void run() {
+        public synchronized void run() {
             Message msg = new Message();
             Bundle data = new Bundle();
             List<NewsTitle.MyList> e = new ArrayList<>();
@@ -227,7 +227,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 mPullToRefreshView.postDelayed(new Runnable() {
                     @Override
                     //刷新结束调用run
-                    public void run() {
+                    public synchronized void run() {
                         showTip("Refresh finish...");
                         mPullToRefreshView.setRefreshing(false);
                     }
@@ -237,7 +237,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         LinearLayout blay1 = (LinearLayout) findViewById(R.id.blay1);
         blay1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public synchronized void onClick(View view) {
                 ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
                 if (isfavourites == 1) {
                     currentPage--;
@@ -252,7 +252,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         LinearLayout blay2 = (LinearLayout) findViewById(R.id.blay2);
         blay2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public synchronized void onClick(View view) {
                 ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
                 if (isfavourites == 1) {
                     currentPage--;
@@ -268,7 +268,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         LinearLayout blay3 = (LinearLayout) findViewById(R.id.blay3);
         blay3.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public synchronized void onClick(View view) {
                 int d_n = news.getNight(uiActivity.this);
                 if (d_n == MODE_NIGHT_YES) {
                     d_n = MODE_NIGHT_NO;
@@ -284,7 +284,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         LinearLayout blay4 = (LinearLayout) findViewById(R.id.blay4);
         blay4.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public synchronized void onClick(View view) {
                 ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
                 if (isfavourites == 1) {
                     mNews.clear();
@@ -296,7 +296,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
                 new Thread(new Runnable() {
                     @Override
-                    public void run() {
+                    public synchronized void run() {
                         refreshoradd = REFRESH;
                         Message msg = new Message();
                         Bundle data = new Bundle();
@@ -325,7 +325,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         });
         new Thread(new Runnable() {
             @Override
-            public void run() {
+            public synchronized void run() {
                 try{
                     if (suggestlock.tryLock()) {
                         suggest.clear();
@@ -349,7 +349,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
         blay5.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public synchronized void onClick(View view) {
                 Intent intent = new Intent(uiActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
@@ -358,12 +358,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         TabLayout tl = (TabLayout) findViewById(R.id.headTab);
         tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                cate = tab.getPosition();
-                //showTip(new Integer(cate).toString());
-                mNews.clear();
-                currentPage = 1;
-                refresh();
+            public synchronized void onTabSelected(TabLayout.Tab tab) {
+                    cate = tab.getPosition();
+                    //showTip(new Integer(cate).toString());
+                    mNews.clear();
+                    currentPage = 1;
+                    refresh();
             }
 
             @Override
@@ -381,7 +381,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
 
     @Override
-    public boolean onQueryTextChange(String query) {
+    public synchronized boolean onQueryTextChange(String query) {
         // TODO Auto-generated method stub
         keyword = query;
         if (query.equals("")) {
@@ -407,7 +407,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     }
     //单击搜索按钮时激发该方法
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public synchronized boolean onQueryTextSubmit(String query) {
         showTip(query);
         keyword = query;
         if (query.equals("")) {
@@ -497,7 +497,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 loadPic = new Handler()
                 {
                     @Override
-                    public void handleMessage(Message msg)
+                    public synchronized void handleMessage(Message msg)
                     {
                         String url = msg.getData().getString("url");
                         Glide.with(uiActivity.this)
@@ -512,14 +512,14 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             }
         }
 
-        public void onClick(View v) {
+        public synchronized void onClick(View v) {
             //showTip(id);
             new Thread(opennews).start();
         }
 
         Handler hd = new Handler() {
             @Override
-            public void handleMessage(Message msg) {
+            public synchronized void handleMessage(Message msg) {
                 if (msg.what == 0) {
                     if(news.isviewed(id, uiActivity.this)) {
                         title.setTextColor(Color.GRAY);
@@ -536,7 +536,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
         Runnable opennews = new Runnable() {
             @Override
-            public void run() {
+            public synchronized void run() {
                 try {
                     news.viewed(news.getNewsText(id, uiActivity.this), uiActivity.this);
                     Intent intent = new Intent(uiActivity.this, NewsActivity.class);
@@ -558,7 +558,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         {
             //获取网址url
             @Override
-            public void run() {
+            public synchronized void run() {
                 try {
                     NewsText itemText = news.getNewsText(id, uiActivity.this);
                     String recommend =  news.getRandPictures(itemText.Keywords);
