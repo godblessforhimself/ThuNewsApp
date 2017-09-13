@@ -23,7 +23,7 @@ public class Storage
     private static String newsTextfile="newsTextfile.txt";
     private static String collectionfile="collectionfile.txt";
     private static String shieldwordsfile="shieldwords.txt";
-    public static void clearAllInfo(Context context)
+    public static  synchronized void clearAllInfo(Context context)
     {
         try
         {
@@ -41,7 +41,7 @@ public class Storage
         {
         }
     }
-    public static void addTextFile(NewsText text,Context context)
+    public static  synchronized void addTextFile(NewsText text,Context context)
     {
         try
         {
@@ -53,7 +53,7 @@ public class Storage
         {
         }
     }
-    public static void addCollectionFile(NewsTitle title,Context context)
+    public static  synchronized void addCollectionFile(NewsTitle title,Context context)
     {
         File file = new File(context.getFilesDir(), collectionfile);
         try {
@@ -65,7 +65,7 @@ public class Storage
 
         }
     }
-    public static void delCollectionFile(String news_ID, Context context)
+    public static  synchronized void delCollectionFile(String news_ID, Context context)
     {
         NewsTitle title=findCollectionNews(context);
         File file = new File(context.getFilesDir(), collectionfile);
@@ -85,7 +85,7 @@ public class Storage
         }
 
     }
-    public static void addshieldwordsFile(String shieldword,Context context)
+    public static  synchronized void addshieldwordsFile(String shieldword,Context context)
     {
         try
         {
@@ -99,7 +99,7 @@ public class Storage
 
         }
     }
-    public static void delshieldFile(String shieldword, Context context)
+    public static  synchronized void delshieldFile(String shieldword, Context context)
     {
         List<String> list=getShieldWords(context);
         File file = new File(context.getFilesDir(), shieldwordsfile);

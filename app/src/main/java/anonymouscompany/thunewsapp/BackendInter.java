@@ -223,7 +223,7 @@ public class BackendInter implements  BackendInterface
             for (int i=0;i<keywords.size();i++)
             {
                 String str = ReversedNews.getRandPicturs(keywords.get(i).word);
-                Pattern pattern = Pattern.compile("http://img.ivsky.com/img/tupian/t/.*?\\.jpg");
+                Pattern pattern = Pattern.compile("http://img.ivsky.com/img/tupian/t/.*?\\.(jpg|png)");
                 Matcher matcher = pattern.matcher(str);
                 while (matcher.find())return matcher.group();
             }
