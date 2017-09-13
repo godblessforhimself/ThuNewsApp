@@ -111,7 +111,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         tabLayout = (TabLayout) findViewById(R.id.headTab);
         mAdapter = new HomeAdapter();
         recyclerView.setAdapter(mAdapter);
-        news.setPicturesDisplay(1, uiActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
@@ -129,6 +128,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             }
             else if (refreshoradd == REFRESH){
                 mNews.addAll(0, (ArrayList) msg.getData().getParcelableArrayList("news"));
+                mPullToRefreshView.setRefreshing(false);
             }
             newsNum = mNews.size();
             if (issearching == 0) {
@@ -221,6 +221,13 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         blay1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
+                if (isfavourites == 1) {
+                    currentPage--;
+                    iv.setImageResource(R.drawable.favorite);
+                    isfavourites = 0;
+                }
+                mPullToRefreshView.setRefreshing(true);
                 refresh();
             }
         });
@@ -255,6 +262,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         blay4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ImageView iv = (ImageView) findViewById(R.id.bmenu_img2);
+                if (isfavourites == 1) {
+                    mNews.clear();
+                    iv.setImageResource(R.drawable.favorite);
+                    isfavourites = 0;
+                }
+
+                mPullToRefreshView.setRefreshing(true);
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

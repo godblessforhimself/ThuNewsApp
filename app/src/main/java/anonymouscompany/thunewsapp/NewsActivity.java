@@ -2,6 +2,7 @@ package anonymouscompany.thunewsapp;
 
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -176,7 +177,6 @@ public class NewsActivity extends AppCompatActivity {
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
     private int ttsState = NOTINIT;
-
     void setListeners()
     {
         fab.setOnClickListener(new View.OnClickListener() {
@@ -287,6 +287,8 @@ public class NewsActivity extends AppCompatActivity {
                 sharemsg = "fail";
                 shareHandler.sendMessage(msg);
             }
+
+
         }
     };
 

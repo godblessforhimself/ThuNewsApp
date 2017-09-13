@@ -2,9 +2,11 @@ package anonymouscompany.thunewsapp;
 
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -137,6 +139,7 @@ public class BackendInter implements  BackendInterface
     public NewsTitle likeNewsTitel(Context context) throws Exception
     {
         NewsTitle title=getNewsTitle(2,100,0,context);
+
         for (int i=0;i<title.list.size();i++)
         {
             NewsText text=getNewsText(title.list.get(i).news_ID,context);
@@ -156,6 +159,7 @@ public class BackendInter implements  BackendInterface
                 return (int) (a.score - b.score);
             }
         });
+
         return title;
     }
     public void clearAllInfo(Context context)
@@ -174,18 +178,21 @@ public class BackendInter implements  BackendInterface
     {
         return Integer.parseInt(ConfigI.load("Night Info",context));
     }
-    public String getRandPictures(String keyword)
+    public String getRandPictures(List<NewsText.Keyword> keywords)
     {
         try
         {
-            String str = ReversedNews.getRandPicturs(keyword);
-            Pattern pattern=Pattern.compile("http://img.ivsky.com/img/tupian/t/.*?\\.jpg");
-            Matcher matcher=pattern.matcher(str);
-            while (matcher.find()) return matcher.group();
+            for (int i=0;i<keywords.size();i++)
+            {
+                String str = ReversedNews.getRandPicturs(keywords.get(i).word);
+                Pattern pattern = Pattern.compile("http://img.ivsky.com/img/tupian/t/.*?\\.jpg");
+                Matcher matcher = pattern.matcher(str);
+                while (matcher.find()) return matcher.group();
+            }
         }catch (Exception e)
         {
 
         }
-        return "";
+        return "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1193931039,3903211748&fm=27&gp=0.jpg";
     }
 }

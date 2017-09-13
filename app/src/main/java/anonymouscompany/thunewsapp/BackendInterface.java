@@ -14,7 +14,6 @@ public interface BackendInterface
     NewsTitle getNewsTitle(String news_ID,Context context) throws Exception;
     NewsText getNewsText(String news_ID, Context context)  throws Exception;//返回新闻详情
     NewsTitle getCollectionNews(Context context);//返回收藏的所有新闻标题
-
     void addCollectionNews(NewsText text, Context context);//收藏新闻
     void delCollectionNews(NewsText text, Context context);//删除收藏新闻
     boolean isCollectionNews(String news_ID,Context context);//是否被收藏过
@@ -30,6 +29,6 @@ public interface BackendInterface
     void clearAllInfo(Context context);//清空缓存
     void setNight(int type, Context context);//保持夜间模式配置信息
     int getNight(Context context);//获得是否为夜间模式
-    String getRandPictures(String keyword);//获得推荐图片
+    String getRandPictures(List<NewsText.Keyword> keywords);//获得推荐图片
 }
 

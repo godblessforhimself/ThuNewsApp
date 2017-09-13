@@ -16,7 +16,6 @@ public class ReversedNews //连接服务器
     {
         String str="http://166.111.68.66:2042/news/action/query/latest?pageNo="+page+"&pageSize="+pagesize;
         if (category!=0) str+="&category="+category;
-        System.out.println(str);
         URL website = new URL(str);
         HttpURLConnection con = (HttpURLConnection)website.openConnection();
         InputStreamReader in = new InputStreamReader(con.getInputStream(),"utf-8");
