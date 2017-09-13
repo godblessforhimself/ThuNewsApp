@@ -288,18 +288,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
                         try{
                             suggestlock.lock();
-                            e.addAll(suggest);
+                            e.addAll(suggest.subList(0, pageSize));
+                            for (int i = 0; i < pageSize; i++) {
+                                suggest.remove(0);
+                            }
                             suggestlock.unlock();
                             data.putParcelableArrayList("news",(ArrayList)e);
                             msg.setData(data);
                             msg.what = 1;
                             handler.sendMessage(msg);
-
-                            if (suggestlock.tryLock()) {
-                                suggest.clear();
-                                suggest.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
-                                suggestlock.unlock();
-                            }
                         } catch (Exception ex)
                         {
                             Log.d("exception",ex.toString());
@@ -311,14 +308,13 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 }).start();
             }
         });
-        //suggestlock.unlock();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
                     if (suggestlock.tryLock()) {
                         suggest.clear();
-                        suggest.addAll(news.likeNewsTitel(uiActivity.this).list.subList(0, 10));
+                        suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
                         suggestlock.unlock();
                     }
                 } catch (Exception ex)
