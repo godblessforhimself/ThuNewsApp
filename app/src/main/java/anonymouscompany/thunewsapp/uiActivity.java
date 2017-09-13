@@ -302,12 +302,9 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                         Bundle data = new Bundle();
                         List<NewsTitle.MyList> e = new ArrayList<NewsTitle.MyList>();
                         try{
-                            suggestlock.lock();
+                            suggest.clear();
+                            suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
                             e.addAll(suggest.subList(0, pageSize));
-                            for (int i = 0; i < pageSize; i++) {
-                                suggest.remove(0);
-                            }
-                            suggestlock.unlock();
                             data.putParcelableArrayList("news",(ArrayList)e);
                             msg.setData(data);
                             msg.what = 1;
@@ -323,28 +320,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 }).start();
             }
         });
-        new Thread(new Runnable() {
-            @Override
-            public synchronized void run() {
-                try{
-                    if (suggestlock.tryLock()) {
-                        suggest.clear();
-                        suggest.addAll(news.likeNewsTitel(uiActivity.this).list);
-                        suggestlock.unlock();
-                        Message msg = new Message();
-                        msg.what = 0;
-                        msg.obj = "Suggedtions Completed";
-                        handler.sendMessage(msg);
-                    }
-                } catch (Exception ex)
-                {
-                    Message msg = new Message();
-                    msg.what = 0;
-                    msg.obj = ex.toString();
-                    handler.sendMessage(msg);
-                }
-            }
-        }).start();
 
         LinearLayout blay5 = (LinearLayout) findViewById(R.id.blay5);
         blay5.setOnClickListener(new View.OnClickListener() {
