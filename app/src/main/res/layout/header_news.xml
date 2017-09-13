@@ -13,11 +13,10 @@
         android:layout_marginRight="1dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
-        android:fontFamily="monospace"
         android:text="Title"
         android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="24sp" />
 
 
 
@@ -34,27 +33,25 @@
             android:layout_weight="1"
             android:text="Tag"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
             android:id="@+id/newsAuthor2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:lineSpacingExtra="8sp"
             android:text="Author"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
             android:id="@+id/newsTime2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:lineSpacingExtra="8sp"
             android:text="Time"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
     </LinearLayout>
 

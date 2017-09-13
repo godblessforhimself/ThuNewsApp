@@ -23,8 +23,8 @@
         android:layout_margin="10dp"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:fontFamily="serif"
-        android:text="Content" />
+        android:text="Content"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 
 
 </LinearLayout>

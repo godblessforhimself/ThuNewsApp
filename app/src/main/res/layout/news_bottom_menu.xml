@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/播放"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
     </LinearLayout>
 
@@ -56,7 +57,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/stop" />
+            android:text="@string/stop"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
     </LinearLayout>
 
@@ -81,7 +84,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/加入收藏" />
+            android:text="@string/加入收藏"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
     </LinearLayout>
 
@@ -106,7 +111,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/分享" />
+            android:text="@string/分享"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
     </LinearLayout>
 </LinearLayout>
