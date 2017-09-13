@@ -1,6 +1,8 @@
 package anonymouscompany.thunewsapp;
 
 
+import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -8,7 +10,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +26,7 @@ import com.bumptech.glide.Glide;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 public class NewsActivity extends AppCompatActivity {
     BackendInter bi;
@@ -29,6 +36,7 @@ public class NewsActivity extends AppCompatActivity {
     LinearLayout start,pause,share,collect;
     ExpandableListView keyword;
     boolean collected = false;
+    boolean recommend = true;
     TextView title,tag,author,time,text;
     ImageView img;
     String sharemsg = "";
@@ -60,6 +68,21 @@ public class NewsActivity extends AppCompatActivity {
                         ((ImageView)findViewById(R.id.s31)).setImageResource(R.drawable.collected);
                     }
                     setListeners();
+
+                    final mAdapter adapter = new mAdapter();
+                    adapter.init(news);
+                    keyword.setAdapter(adapter);
+                    keyword.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                        @Override
+                        public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                            String search = (String)adapter.getChild(i,i1);
+                            Intent intent = new Intent(NewsActivity.this, BaikeWebActivity.class);
+                            intent.putExtra("keyword", search);
+                            showTip("跳转到百度百科...");
+                            startActivity(intent);
+                            return true;
+                        }
+                    });
                     text.setText(news.news_Content);
                     tag.setText(news.newsClassTag);
                     time.setText(news.news_Time);
@@ -78,9 +101,21 @@ public class NewsActivity extends AppCompatActivity {
                                     .into(img);
                             showTip(pictures[0]);
                             Log.d("Picture",pictures[0] + "newsid:" +news.news_ID);
+                            recommend = false;
                         }
 
                         //新闻列表图片加载
+                    }
+                    if (recommend)
+                    {
+                        NewsText.Keyword word = news.Keywords.get(0);
+                        Glide.with(NewsActivity.this)
+                                .load(bi.getRandPictures(word.word))
+                                .fitCenter()
+                                .dontAnimate()
+                                .placeholder(R.drawable.code)
+                                .into(img);
+                        showTip("图片推荐算法，根据keyword="+word.word);
                     }
                 }
             }
@@ -243,7 +278,9 @@ public class NewsActivity extends AppCompatActivity {
         }
     };
 
-    public InputStream getImageStream(String path) throws Exception{
+    public InputStream getImageStream(String path) throws Exception
+    {
+        showTip("getImageStream +" + path);
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(5 * 1000);
@@ -256,5 +293,132 @@ public class NewsActivity extends AppCompatActivity {
     private void showTip(String s)
     {
         Toast.makeText(NewsActivity.this,s, Toast.LENGTH_LONG).show();
+    }
+    private class mAdapter extends BaseExpandableListAdapter {
+        List<NewsText.Keyword> keywordList;
+        List<NewsText.Person> persons,locations;
+        private static final int KEYWORD = 0, PERSON = 1, LOCATION = 2;
+        public void init(NewsText news)
+        {
+            keywordList = news.Keywords;
+            persons = news.persons;
+            locations = news.locations;
+        }
+        String getParentText(int i)
+        {
+            switch (i)
+            {
+                case KEYWORD:
+                    return "Keywords";
+                case PERSON:
+                    return "Persons";
+                case LOCATION:
+                    return  "Locations";
+                default:
+                    return "default";
+            }
+        }
+        @Override
+        public int getGroupCount() {
+            return 3;
+        }
+
+        @Override
+        public int getChildrenCount(int i) {
+            switch (i)
+            {
+                case KEYWORD:
+                    return keywordList.size();
+                case PERSON:
+                    return persons.size();
+                case LOCATION:
+                    return locations.size();
+                default:
+                    return 0;
+            }
+        }
+
+        @Override
+        public Object getGroup(int i) {
+            switch (i)
+            {
+                case KEYWORD:
+                    return keywordList;
+                case PERSON:
+                    return persons;
+                case LOCATION:
+                    return locations;
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public Object getChild(int i, int i1) {
+            switch (i)
+            {
+                case KEYWORD:
+                    return keywordList.get(i1).word;
+                case PERSON:
+                    return persons.get(i1).word;
+                case LOCATION:
+                    return locations.get(i1).word;
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public long getGroupId(int i) {
+            return i;
+        }
+
+        @Override
+        public long getChildId(int i, int i1) {
+            return i * i1;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override
+        public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
+            View res = LayoutInflater.from(NewsActivity.this).inflate(R.layout.expand_item, viewGroup,false);
+            TextView text = res.findViewById(R.id.keys);
+            if (text!=null)
+            text.setText(getParentText(i));
+            else
+                showTip("cant find textview");
+            return res;
+        }
+
+        @Override
+        public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
+            View res = LayoutInflater.from(NewsActivity.this).inflate(R.layout.expand_item, viewGroup,false);
+            TextView text = res.findViewById(R.id.keys);
+            if (text!=null)
+            {
+                if (i == KEYWORD)
+                {
+                    text.setText(keywordList.get(i1).word);
+                }
+                else if (i == PERSON)
+                {
+                    text.setText(persons.get(i1).word);
+                }
+                else
+                    text.setText(locations.get(i1).word);
+            }
+            else
+                showTip("cant find textview");
+            return res;
+        }
+
+        @Override
+        public boolean isChildSelectable(int i, int i1) {
+            return true;
+        }
     }
 }
