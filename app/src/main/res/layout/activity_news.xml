@@ -5,93 +5,94 @@
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/news_header"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingActionButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentEnd="false"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="25pt"
-                android:layout_weight="1"
-                android:clickable="true"
-                app:backgroundTint="@android:color/background_light"
-                app:borderWidth="0dp"
-                app:elevation="5dp"
-                app:fabSize="mini"
-                app:pressedTranslationZ="0dp"
-                app:rippleColor="@android:color/darker_gray"
-                app:srcCompat="@drawable/fullscreen" />
+            <include layout="@layout/header_news"></include>
+        </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/news_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:orientation="vertical">
-
-                <include layout="@layout/header_news"></include>
-            </LinearLayout>
-
-        </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/news_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignLeft="@+id/news_header"
-        android:layout_alignStart="@+id/news_header"
-        android:layout_below="@+id/news_header"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:orientation="vertical">
-
-        <anonymouscompany.thunewsapp.mScrollView
-            android:id="@+id/middle"
+        <LinearLayout
+            android:id="@+id/news_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/news_menu"
+            android:layout_alignLeft="@+id/news_header"
+            android:layout_alignStart="@+id/news_header"
+            android:layout_below="@+id/news_header"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <anonymouscompany.thunewsapp.mScrollView
+                android:id="@+id/middle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include
+                    layout="@layout/content_news"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </anonymouscompany.thunewsapp.mScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/news_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:layout_weight="0"
+            android:baselineAligned="false"
+            android:orientation="vertical">
 
             <include
-                layout="@layout/content_news"
+                layout="@layout/news_bottom_menu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </anonymouscompany.thunewsapp.mScrollView>
+                android:layout_height="wrap_content"></include>
+        </LinearLayout>
 
-    </LinearLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="45dp"
+            android:clickable="true"
+            app:backgroundTint="@android:color/background_light"
+            app:borderWidth="0dp"
+            app:elevation="5dp"
+            app:fabSize="mini"
+            app:pressedTranslationZ="0dp"
+            app:rippleColor="@android:color/darker_gray"
+            app:srcCompat="@drawable/fullscreen" />
 
-    <LinearLayout
-        android:id="@+id/news_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:layout_weight="3.5"
-        android:background="@android:color/transparent"
-        android:baselineAligned="false"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/news_bottom_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></include>
-    </LinearLayout>
-
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/baike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/floatingActionButton"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            app:backgroundTint="@android:color/background_light"
+            app:elevation="9dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/baike" />
+    </RelativeLayout>
 
 </LinearLayout>

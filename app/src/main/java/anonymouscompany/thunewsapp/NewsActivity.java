@@ -13,22 +13,20 @@ import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -44,7 +42,7 @@ public class NewsActivity extends AppCompatActivity {
     LinearLayout head,bottom;
     mScrollView middle;
     ExpandableListView keyword;
-    FloatingActionButton fab;
+    FloatingActionButton fab,baike;
     long timer = 0;
     boolean collected = false;
     boolean recommend = true;
@@ -101,6 +99,8 @@ public class NewsActivity extends AppCompatActivity {
                     time.setText(news.news_Time);
                     author.setText(news.news_Author);
                     title.setText(news.news_Title);
+                    if (bi.getPicturesDisplay(NewsActivity.this) == 0)
+                    new Thread(getPicture).start();
                 }
             }
         };
@@ -122,18 +122,18 @@ public class NewsActivity extends AppCompatActivity {
             {
                 Glide.with(NewsActivity.this)
                         .load(shareImgUrl)
-                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .dontAnimate()
                         .placeholder(R.drawable.pig)
                         .into(img);
-                showTip("图片Url:" + shareImgUrl + "from:" + (recommend ? "推荐算法" : "详情图片"));
+                showTip("图片Url:" + shareImgUrl + " from:" + (recommend ? "推荐算法" : "详情图片"));
             }
         };
-        bi = new BackendInter();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    bi = new BackendInter();
                     news = bi.getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
                     Message msg = new Message();
                     msg.what = loadSuccess;
@@ -146,9 +146,6 @@ public class NewsActivity extends AppCompatActivity {
                 }
             }
         }).start();
-
-        //AppCompatDelegate.setDefaultNightMode(bi.getNight(NewsActivity.this));
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
     }
     Runnable getPicture = new Runnable() {
@@ -190,12 +187,7 @@ public class NewsActivity extends AppCompatActivity {
         middle = (mScrollView) findViewById(R.id.middle);
         bottom = (LinearLayout) findViewById(R.id.news_menu);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        /*
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        */
+        baike = (FloatingActionButton) findViewById(R.id.baike);
 
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
@@ -244,7 +236,20 @@ public class NewsActivity extends AppCompatActivity {
                 }
             }
         });
-
+        baike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int Vis = keyword.getVisibility();
+                if (Vis == View.GONE)
+                {
+                    keyword.setVisibility(View.VISIBLE);
+                }
+                else if (Vis == View.VISIBLE)
+                {
+                    keyword.setVisibility(View.GONE);
+                }
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
