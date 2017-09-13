@@ -27,6 +27,7 @@
             android:id="@+id/news_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/news_menu"
             android:layout_alignLeft="@+id/news_header"
             android:layout_alignStart="@+id/news_header"
             android:layout_below="@+id/news_header"
@@ -77,6 +78,19 @@
             app:pressedTranslationZ="0dp"
             app:rippleColor="@android:color/darker_gray"
             app:srcCompat="@drawable/fullscreen" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/baike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/news_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            app:backgroundTint="@android:color/background_light"
+            app:elevation="9dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/baike" />
     </RelativeLayout>
 
 </LinearLayout>
