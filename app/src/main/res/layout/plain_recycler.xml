@@ -94,8 +94,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:textAlignment="textEnd"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 
 </LinearLayout>
