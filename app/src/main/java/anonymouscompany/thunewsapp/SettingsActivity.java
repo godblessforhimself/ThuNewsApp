@@ -205,7 +205,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             SwitchPreference pdt = (SwitchPreference) findPreference("example_switch");
             pdt.setChecked(new BackendInter().getPicturesDisplay(context) == 1);
-            //showTip(new Integer(new BackendInter().getPicturesDisplay(context)).toString());
+            showTip(new Integer(new BackendInter().getPicturesDisplay(context)).toString());
             pdt.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o) {
