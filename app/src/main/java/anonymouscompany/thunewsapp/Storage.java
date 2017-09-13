@@ -176,8 +176,9 @@ public class Storage
         }catch (Exception e)
         {
 
+            Log.d("ltl","rrr" + e.toString());
         }
-        return null;
+        return new NewsTitle();
     }
     public static NewsTitle findCollectionNews(Context context)
     {

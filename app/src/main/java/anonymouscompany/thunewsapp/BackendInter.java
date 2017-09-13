@@ -48,7 +48,6 @@ public class BackendInter implements  BackendInterface
         {
             Log.d("wc","catch");
         }
-        Log.d("LTL","wc"+Integer.toString(title.list.size()));
         return title;
     }
     public NewsTitle getNewsTitle(String news_ID,Context context) throws Exception
