@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +61,7 @@ public class BackendInter implements  BackendInterface
     {
         char ch=12288;
         String newString="";
-        if (content.charAt(0)!=ch) newString+="  ";
+        if (content.charAt(0)!=ch) newString+=""+ch+ch;
         int i=0;
         while (i<content.length())
         {
@@ -202,7 +203,9 @@ public class BackendInter implements  BackendInterface
         if (title==null) Log.d("ltl","gettitel2222");*/
         String maxword=ConfigI.load("LTL",context);
         Log.d("ltl",maxword);
-        return searchNewsTitel(maxword,2, 100, 0,context);
+        int random = new Random().nextInt(10)+1;
+        Log.d("ltl",Integer.toString(random));
+        return searchNewsTitel(maxword,random, 100, 0,context);
     }
     public void clearAllInfo(Context context)
     {
