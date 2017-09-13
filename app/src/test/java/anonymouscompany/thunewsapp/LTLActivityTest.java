@@ -31,11 +31,15 @@ public class LTLActivityTest
         BackendInterface inter=new BackendInter();
         try
         {
-           NewsTitle title=inter.getNewsTitle(1,10,1,mainActivity);
-
-           System.out.println("---------------\n");
-            title=inter.getNewsTitle(1,10,2,mainActivity);
-
+            inter.addShiledWord("ltl",mainActivity);
+            inter.addShiledWord("jt",mainActivity);
+            List<String> word=inter.getShiledWord(mainActivity);
+            inter.delShiledWord("jt",mainActivity);
+            word=inter.getShiledWord(mainActivity);
+            for (int i=0;i<word.size();i++)
+            {
+                System.out.println(word.get(i));
+            }
         }catch (Exception e)
         {
             System.out.print("No\n");

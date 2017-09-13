@@ -101,16 +101,17 @@ public class Storage
     public static void delshieldFile(String shieldword, Context context)
     {
         List<String> list=getShieldWords(context);
-        File file = new File(context.getFilesDir(), collectionfile);
+        File file = new File(context.getFilesDir(), shieldwordsfile);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
             for (int i=0;i<list.size();i++)
                 if (!list.get(i).equals(shieldword))
+                {
                     out.write(list.get(i) + "\n");
+                }
             out.close();
         }catch (Exception e)
         {
-
         }
 
     }
