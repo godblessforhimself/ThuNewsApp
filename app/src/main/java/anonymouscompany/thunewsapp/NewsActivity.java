@@ -2,22 +2,25 @@ package anonymouscompany.thunewsapp;
 
 
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,12 +37,16 @@ public class NewsActivity extends AppCompatActivity {
     mTts ttsInstance;
     NewsText news;
     LinearLayout start,pause,share,collect;
+    LinearLayout head,bottom;
+    ScrollView middle;
     ExpandableListView keyword;
+    FloatingActionButton fab;
     boolean collected = false;
     boolean recommend = true;
+    boolean fullscreen = false;
     TextView title,tag,author,time,text;
     ImageView img;
-    String sharemsg = "";
+    String sharemsg = "", shareImgUrl;
     Handler handler,shareHandler;
     private static final int loadFailed = 0, loadSuccess = 1;
     @Override
@@ -93,30 +100,24 @@ public class NewsActivity extends AppCompatActivity {
                         String[] pictures = news.news_Pictures.split(";");
                         if (!pictures[0].equals(""))
                         {
-                            Glide.with(NewsActivity.this)
-                                    .load(pictures[0])
-                                    .fitCenter()
-                                    .dontAnimate()
-                                    .placeholder(R.drawable.code)
-                                    .into(img);
+                            shareImgUrl = pictures[0];
                             showTip(pictures[0]);
-                            Log.d("Picture",pictures[0] + "newsid:" +news.news_ID);
                             recommend = false;
                         }
-
                         //新闻列表图片加载
                     }
                     if (recommend)
                     {
                         NewsText.Keyword word = news.Keywords.get(0);
-                        Glide.with(NewsActivity.this)
-                                .load(bi.getRandPictures(word.word))
-                                .fitCenter()
-                                .dontAnimate()
-                                .placeholder(R.drawable.code)
-                                .into(img);
-                        showTip("图片推荐算法，根据keyword="+word.word);
+                        shareImgUrl = bi.getRandPictures(word.word);
                     }
+                    Glide.with(NewsActivity.this)
+                            .load(shareImgUrl)
+                            .fitCenter()
+                            .dontAnimate()
+                            .placeholder(R.drawable.pig)
+                            .into(img);
+                    showTip("图片Url:" + shareImgUrl + "from:" + (recommend ? "推荐算法" : "详情图片"));
                 }
             }
         };
@@ -125,7 +126,7 @@ public class NewsActivity extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg)
             {
-                showTip(sharemsg);
+                showTip("handler share " + sharemsg);
                 Bitmap map = msg.getData().getParcelable("bitmap");
                 wbshareInstance.setThumbImg(map);
                 wbshareInstance.shareMessage();
@@ -166,12 +167,37 @@ public class NewsActivity extends AppCompatActivity {
         pause = (LinearLayout) findViewById(R.id.s2);
         collect = (LinearLayout) findViewById(R.id.s3);
         share = (LinearLayout) findViewById(R.id.s4);
+        head = (LinearLayout) findViewById(R.id.news_header);
+        middle = (ScrollView) findViewById(R.id.middle);
+        bottom = (LinearLayout) findViewById(R.id.news_menu);
+        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+
 
     }
     private static final int NOTINIT = 0,SPEAKING = 1,PAUSING = 2,STOP = 3;
     private int ttsState = NOTINIT;
+
     void setListeners()
     {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fullscreen)
+                {
+                    head.setVisibility(View.VISIBLE);
+                    bottom.setVisibility(View.VISIBLE);
+                    fullscreen = false;
+                }
+                else
+                {
+                    head.setVisibility(View.GONE);
+                    bottom.setVisibility(View.GONE);
+                    fullscreen = true;
+                }
+            }
+        });
+
+
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -248,33 +274,19 @@ public class NewsActivity extends AppCompatActivity {
     Runnable shareDownload = new Runnable() {
         @Override
         public void run() {
-            if (news.news_Pictures.equals(""))
+            Message msg = new Message();
+            try{
+                Bitmap bitmap = BitmapFactory.decodeStream(getImageStream(shareImgUrl));
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("bitmap",bitmap);
+                msg.setData(bundle);
+                sharemsg = "success";
+                shareHandler.sendMessage(msg);
+            }catch (Exception e)
             {
                 sharemsg = "fail";
-                return;
+                shareHandler.sendMessage(msg);
             }
-            String[] pictures = news.news_Pictures.split(";");
-            for (String picture:pictures)
-            {
-                if (!picture.equals(""))
-                {
-                    try{
-                        Bitmap bitmap = BitmapFactory.decodeStream(getImageStream(picture));
-                        Message msg = new Message();
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("bitmap",bitmap);
-                        msg.setData(bundle);
-                        sharemsg = "success";
-                        shareHandler.sendMessage(msg);
-                    }catch (Exception e)
-                    {
-                        sharemsg = "fail";
-                    }
-                    return;
-                }
-            }
-
-
         }
     };
 
