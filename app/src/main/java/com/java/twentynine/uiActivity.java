@@ -78,7 +78,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         }
         refreshoradd = REFRESH;
         showTip("Refresh, you should set some view changed...");
-        new Thread(netWorkTask).start();
+        if (!isLoading)
+        {
+            new Thread(netWorkTask).start();
+            isLoading = true;
+        }
+        else
+        {
+            showTip("Previous thread is loading,wait");
+        }
     }
     public void addNews()
     {
@@ -93,9 +101,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         } else {
 
         }
-        refreshoradd = ADD;
-        showTip("addNews, you should set some view changed...");
-        new Thread(netWorkTask).start();
+        if (!isLoading)
+        {
+            new Thread(netWorkTask).start();
+            isLoading = true;
+        }
+        else
+        {
+            showTip("Previous thread is loading,wait");
+        }
     }
     public void init()
     {
@@ -137,8 +151,8 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 issearching++;
             }
             mAdapter.init(mNews);
-
             mAdapter.notifyDataSetChanged();
+            isLoading = false;
             showTip("News fetch finish, total num:" + newsNum);
         }
     };
