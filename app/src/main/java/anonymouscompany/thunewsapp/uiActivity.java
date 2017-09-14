@@ -202,14 +202,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                 {
                     addNews();
                 }
-                if (dy * dy > 100)
-                {
-                    Glide.with(uiActivity.this).pauseRequests();
-                }
-                else
-                {
-                    Glide.with(uiActivity.this).resumeRequests();
-                }
             }
         });
 
@@ -227,14 +219,6 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             public void onRefresh() {
                 //调用刷新
                 refresh();
-                mPullToRefreshView.postDelayed(new Runnable() {
-                    @Override
-                    //刷新结束调用run
-                    public synchronized void run() {
-                        showTip("Refresh finish...");
-                        mPullToRefreshView.setRefreshing(false);
-                    }
-                }, 1000);
             }
         });
         LinearLayout blay1 = (LinearLayout) findViewById(R.id.blay1);
