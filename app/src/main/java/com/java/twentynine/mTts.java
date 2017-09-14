@@ -173,6 +173,12 @@ public class mTts implements mTtsInterface{
 
     @Override
     public boolean destroy() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            valid = false;
+            return true;
+        }
         if (mTts.isSpeaking())
         {
             showTip("Tts is speaking , destroy it...");
@@ -189,31 +195,58 @@ public class mTts implements mTtsInterface{
 
     @Override
     public void setSpeed(int speed) {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+        }
         mTts.setParameter(SpeechConstant.SPEED,Integer.toString(speed));
     }
 
     @Override
     public void setVolume(int volume) {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+        }
         mTts.setParameter(SpeechConstant.VOLUME,Integer.toString(volume));
     }
 
     @Override
     public void setVoicer(String voicer) {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+        }
         mTts.setParameter(SpeechConstant.VOICE_NAME,voicer);
     }
 
     @Override
     public int getSpeed() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            return -1;
+        }
         return Integer.parseInt(mTts.getParameter(SpeechConstant.SPEED));
     }
 
     @Override
     public int getVolume() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            return -1;
+        }
         return Integer.parseInt(mTts.getParameter(SpeechConstant.VOLUME));
     }
 
     @Override
     public String getVoicer() {
+        if (mTts == null)
+        {
+            showTip("mTts is null");
+            return "Null";
+        }
         return mTts.getParameter(SpeechConstant.VOICE_NAME);
     }
 
