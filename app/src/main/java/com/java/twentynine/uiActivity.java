@@ -385,6 +385,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             currentPage--;
         } else {
             issearching = 1;
+            mNews.clear();
         }
         if (currentPage ==0) {
             currentPage = 1;
