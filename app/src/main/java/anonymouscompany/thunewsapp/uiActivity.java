@@ -462,15 +462,20 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             boolean needRecommend = true;
             if (news.getPicturesDisplay(uiActivity.this) == 1)
                 needRecommend = false;
-            if (!it.news_Pictures.equals("") && needRecommend)
+            String pic = it.news_Pictures;
+            if ((pic.contains(".jpg") || pic.contains(".png") || pic.contains(".bmp") || pic.contains(".jpeg"))&& needRecommend)
             {
                 String[] pictures = it.news_Pictures.split(";");
+                String[] picture = pictures[0].split(" ");
                 //显示第一张
-                if (!pictures[0].equals(""))
+                if (picture[0].contains(".jpg") || picture[0].contains(".png") || picture[0].contains(".bmp")
+                        || picture[0].contains(".jpeg"))
                 {
-                    Glide.with(uiActivity.this)
-                            .load(pictures[0])
+                    Glide.with(getApplicationContext())
+                            .load(picture[0])
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .override(500,500)
+                            .fitCenter()
                             .skipMemoryCache(true)
                             .dontAnimate()
                             .placeholder(R.drawable.elephant)
@@ -487,10 +492,12 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     public synchronized void handleMessage(Message msg)
                     {
                         String url = msg.getData().getString("url");
-                        Glide.with(uiActivity.this)
+                        Glide.with(getApplicationContext())
                                 .load(url)
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                 .skipMemoryCache(true)
+                                .override(500,500)
+                                .fitCenter()
                                 .dontAnimate()
                                 .placeholder(R.drawable.elephant)
                                 .into(img);

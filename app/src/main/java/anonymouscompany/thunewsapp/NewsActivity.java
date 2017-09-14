@@ -152,7 +152,7 @@ public class NewsActivity extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg)
             {
-                Glide.with(NewsActivity.this)
+                Glide.with(getApplicationContext())
                         .load(shareImgUrl)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .skipMemoryCache(true)
@@ -186,12 +186,15 @@ public class NewsActivity extends AppCompatActivity {
     Runnable getPicture = new Runnable() {
         @Override
         public void run() {
-            if (!news.news_Pictures.equals(""))
+            String pic = news.news_Pictures;
+            if (pic.contains(".jpg") || pic.contains(".png") || pic.contains(".bmp") || pic.contains(".jpeg"))
             {
-                String[] pictures = news.news_Pictures.split(";");
-                if (!pictures[0].equals(""))
+                String[] pictures = pic.split(";");
+                String[] picture = pictures[0].split(" ");
+                if (picture[0].contains(".jpg") || picture[0].contains(".png") || picture[0].contains(".bmp")
+                        || picture[0].contains(".jpeg"))
                 {
-                    shareImgUrl = pictures[0];
+                    shareImgUrl = picture[0];
                     recommend = false;
                 }
                 //新闻列表图片加载
