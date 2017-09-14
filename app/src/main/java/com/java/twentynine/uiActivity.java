@@ -102,7 +102,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         mNews = new ArrayList<NewsTitle.MyList>();
         newsNum = 0;
         currentPage = 1;
-        pageSize = 10;
+        pageSize = 50;
         mheader = LayoutInflater.from(this).inflate(R.layout.recyclerview_header,null,false);
         mfooter = LayoutInflater.from(this).inflate(R.layout.recyclerview_footer,null,false);
         recyclerView = (RecyclerView)findViewById(R.id.recycle_0);
