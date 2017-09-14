@@ -464,7 +464,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             //新闻列表图片加载
             boolean needRecommend = true;
             if (news.getPicturesDisplay(uiActivity.this) == 1)
+            {
                 needRecommend = false;
+                img.setVisibility(View.GONE);
+            }
+            else
+            {
+                img.setVisibility(View.VISIBLE);
+            }
+
             String pic = it.news_Pictures;
             if ((pic.contains(".jpg") || pic.contains(".png") || pic.contains(".bmp") || pic.contains(".jpeg"))&& needRecommend)
             {
