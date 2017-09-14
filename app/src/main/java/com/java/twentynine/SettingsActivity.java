@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private static void showTip(String s)
     {
-        Toast.makeText(context,s, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context,s, Toast.LENGTH_SHORT).show();
     }
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -150,9 +150,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            if (!super.onMenuItemSelected(featureId, item)) {
-                NavUtils.navigateUpFromSameTask(this);
-            }
+            finish();
             return true;
         }
         return super.onMenuItemSelected(featureId, item);

@@ -31,6 +31,7 @@
 
         <activity
             android:name=".NewsActivity"
+            android:parentActivityName=".uiActivity"
             android:exported="true"/>
         <activity
             android:name=".BaikeWebActivity"
@@ -38,6 +39,7 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:parentActivityName=".uiActivity"
             android:exported="true">
 
         </activity>
