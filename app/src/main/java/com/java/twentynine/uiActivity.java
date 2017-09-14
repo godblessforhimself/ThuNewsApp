@@ -395,12 +395,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         {
             //result = 1 success  , 0 = failed
             showTip("result = " + result);
-            if(news.isviewed(currentNews.id, uiActivity.this)) {
-                currentNews.title.setTextColor(Color.GRAY);
-                currentNews.intro.setTextColor(Color.GRAY);
-            } else {
-                currentNews.title.setTextColor(currentNews.index.getTextColors());
-                currentNews.intro.setTextColor(currentNews.index.getTextColors());
+            if (currentNews != null)
+            {
+                if(news.isviewed(currentNews.id, uiActivity.this)) {
+                    currentNews.title.setTextColor(Color.GRAY);
+                    currentNews.intro.setTextColor(Color.GRAY);
+                } else {
+                    currentNews.title.setTextColor(currentNews.index.getTextColors());
+                    currentNews.intro.setTextColor(currentNews.index.getTextColors());
+                }
             }
         }
     }
@@ -497,6 +500,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
             Intent intent = new Intent(uiActivity.this, NewsActivity.class);
             intent.putExtra("NewsText", id);
             currentNews = this;
+            showTip("current NEWs != null" + (currentNews != null));
             startActivityForResult(intent, OPENNEWS);
             //灰色在返回时修改
         }
