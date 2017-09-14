@@ -232,6 +232,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
                     isfavourites = 0;
                 }
                 mPullToRefreshView.setRefreshing(true);
+                recyclerView.scrollToPosition(0);
                 refresh();
             }
         });
