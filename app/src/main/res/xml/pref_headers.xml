@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="anonymouscompany.thunewsapp.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.java.twentynine.SettingsActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
 
 
     <header
-        android:fragment="anonymouscompany.thunewsapp.SettingsActivity$ShiledWordPreferenceFragment"
+        android:fragment="com.java.twentynine.SettingsActivity$ShiledWordPreferenceFragment"
         android:title="管理屏蔽关键字" />
 
     <header
-        android:fragment="anonymouscompany.thunewsapp.SettingsActivity$ClearPreferenceFragment"
+        android:fragment="com.java.twentynine.SettingsActivity$ClearPreferenceFragment"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="清理缓存" />
 

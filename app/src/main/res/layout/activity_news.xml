@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <anonymouscompany.thunewsapp.mScrollView
+            <anonymouscompany.twentynine.mScrollView
                 android:id="@+id/middle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -44,7 +44,7 @@
                     layout="@layout/content_news"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-            </anonymouscompany.thunewsapp.mScrollView>
+            </anonymouscompany.twentynine.mScrollView>
         </LinearLayout>
 
         <LinearLayout

@@ -1,10 +1,9 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -229,6 +228,6 @@ public class mTts implements mTtsInterface{
     }
     private void showTip(String text)
     {
-        Toast.makeText(mcontext,text,Toast.LENGTH_SHORT).show();
+        Log.d("mTts.class", "Tip=" + text);
     }
 }

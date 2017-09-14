@@ -1,41 +1,27 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
-import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.content.Intent;
-
-import java.io.*;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -45,8 +31,6 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -54,6 +38,7 @@ import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_NO;
 import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES;
 
 public class uiActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
+    private static final int OPENNEWS = 9;
     private static BackendInter news = new BackendInter();
     private RecyclerView recyclerView;
     private List<NewsTitle.MyList> mNews, mNewsBackup;
@@ -63,6 +48,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     private PullToRefreshView mPullToRefreshView;
     private TabLayout tabLayout;
     private View mheader,mfooter;
+    private mViewHolder currentNews;
     private int issearching = 0;
     private int isfavourites = 0;
     private int refreshoradd = REFRESH;
@@ -76,7 +62,7 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
     private List<NewsTitle.MyList> suggest = new ArrayList<>();
     private void showTip(String s)
     {
-        Toast.makeText(uiActivity.this,s, Toast.LENGTH_SHORT).show();
+        Log.d("uiActivity.class","Tip = " + s);
     }
     private void refresh()
     {
@@ -401,9 +387,23 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
         refresh();
         return true;
     }
-
-
-
+    private static final int OPENSUCCESS = 1,OPENFAILED = 0;
+    @Override
+    protected void onActivityResult(int request, int result, Intent intent)
+    {
+        if (request == OPENNEWS)
+        {
+            //result = 1 success  , 0 = failed
+            showTip("result = " + result);
+            if(news.isviewed(currentNews.id, uiActivity.this)) {
+                currentNews.title.setTextColor(Color.GRAY);
+                currentNews.intro.setTextColor(Color.GRAY);
+            } else {
+                currentNews.title.setTextColor(currentNews.index.getTextColors());
+                currentNews.intro.setTextColor(currentNews.index.getTextColors());
+            }
+        }
+    }
     class mViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         TextView title,tag, people,intro,index;
@@ -426,15 +426,15 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
         public void set(NewsTitle.MyList it)
         {
+            if (itemView == mheader || itemView == mfooter)
+                return;
             id = it.news_ID;
             title.setText(it.news_Title);
             intro.setText(it.news_Intro);
             tag.setText("# "+it.newsClassTag);
             people.setText(it.news_Author);
-            img.setImageURI(Uri.fromFile(new File(it.news_Pictures)));
 
-            if (itemView == mheader || itemView == mfooter)
-                return;
+
             if(news.isviewed(id, uiActivity.this)) {
                 title.setTextColor(Color.GRAY);
                 intro.setTextColor(Color.GRAY);
@@ -493,46 +493,13 @@ public class uiActivity extends AppCompatActivity implements SearchView.OnQueryT
 
         public synchronized void onClick(View v) {
             //showTip(id);
-            new Thread(opennews).start();
+            //new Thread(opennews).start();
+            Intent intent = new Intent(uiActivity.this, NewsActivity.class);
+            intent.putExtra("NewsText", id);
+            currentNews = this;
+            startActivityForResult(intent, OPENNEWS);
+            //灰色在返回时修改
         }
-
-        Handler hd = new Handler() {
-            @Override
-            public synchronized void handleMessage(Message msg) {
-                if (msg.what == 0) {
-                    if(news.isviewed(id, uiActivity.this)) {
-                        title.setTextColor(Color.GRAY);
-                        intro.setTextColor(Color.GRAY);
-                    } else {
-                        title.setTextColor(index.getTextColors());
-                        intro.setTextColor(index.getTextColors());
-                    }
-                } else {
-                    showTip((String)msg.obj);
-                }
-            }
-        };
-
-        Runnable opennews = new Runnable() {
-            @Override
-            public synchronized void run() {
-                try {
-                    news.viewed(news.getNewsText(id, uiActivity.this), uiActivity.this);
-                    Intent intent = new Intent(uiActivity.this, NewsActivity.class);
-                    intent.putExtra("NewsText", id);
-                    Message msg = new Message();
-                    msg.what = 0;
-                    hd.sendMessage(msg);
-                    startActivity(intent);
-                } catch (Exception ex) {
-                    Log.d("exception",ex.toString());
-                    Message msg = new Message();
-                    msg.what = 1;
-                    msg.obj = ex.toString();
-                    hd.sendMessage(msg);
-                }
-            }
-        };
         Runnable getPicture = new Runnable()
         {
             //获取网址url

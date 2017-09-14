@@ -1,4 +1,4 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,9 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.security.Key;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,29 +34,29 @@ public class Storage
             file = new File(context.getFilesDir(), shieldwordsfile);
             out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
             out.close();
-            ConfigI.clear(context);
+            com.java.twentynine.ConfigI.clear(context);
         } catch (Exception e)
         {
         }
     }
-    public static  synchronized void addTextFile(NewsText text,Context context)
+    public static  synchronized void addTextFile(com.java.twentynine.NewsText text, Context context)
     {
         try
         {
             File file = new File(context.getFilesDir(), newsTextfile);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
-            out.write(JasonClass.JsontoString(text)+"\n");
+            out.write(com.java.twentynine.JasonClass.JsontoString(text)+"\n");
             out.close();
         } catch (Exception e)
         {
         }
     }
-    public static  synchronized void addCollectionFile(NewsTitle title,Context context)
+    public static  synchronized void addCollectionFile(com.java.twentynine.NewsTitle title, Context context)
     {
         File file = new File(context.getFilesDir(), collectionfile);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
-            out.write(JasonClass.JsontoString(title)+"\n");
+            out.write(com.java.twentynine.JasonClass.JsontoString(title)+"\n");
             out.close();
         }catch (Exception e)
         {
@@ -67,7 +65,7 @@ public class Storage
     }
     public static  synchronized void delCollectionFile(String news_ID, Context context)
     {
-        NewsTitle title=findCollectionNews(context);
+        com.java.twentynine.NewsTitle title=findCollectionNews(context);
         File file = new File(context.getFilesDir(), collectionfile);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
@@ -77,7 +75,7 @@ public class Storage
                     title.list.remove(i);
                     break;
                 }
-            out.write(JasonClass.JsontoString(title)+"\n");
+            out.write(com.java.twentynine.JasonClass.JsontoString(title)+"\n");
             out.close();
         }catch (Exception e)
         {
@@ -140,14 +138,14 @@ public class Storage
                     return true;
         return false;
     }
-    public static  NewsText findText(String newsid,Context context) throws Exception
+    public static com.java.twentynine.NewsText findText(String newsid, Context context) throws Exception
     {
         File file = new File(context.getFilesDir(), newsTextfile);
         Scanner scanf=new Scanner(new FileInputStream(file));
         while (scanf.hasNext())
         {
             String str=scanf.nextLine();
-            NewsText text=JasonClass.StringtoJson(str,NewsText.class);
+            com.java.twentynine.NewsText text= com.java.twentynine.JasonClass.StringtoJson(str, com.java.twentynine.NewsText.class);
             if (text.news_ID.equals(newsid))
             {
                 scanf.close();
@@ -157,18 +155,18 @@ public class Storage
         scanf.close();
         return null;
     }
-    public static  NewsTitle findTitle(Context context)
+    public static com.java.twentynine.NewsTitle findTitle(Context context)
     {
         try
         {
             File file = new File(context.getFilesDir(), newsTextfile);
             Scanner scanf=new Scanner(new FileInputStream(file));
-            NewsTitle title=new NewsTitle();
+            com.java.twentynine.NewsTitle title=new com.java.twentynine.NewsTitle();
             while (scanf.hasNext())
             {
                 String str=scanf.nextLine();
-                NewsText text=JasonClass.StringtoJson(str,NewsText.class);
-                title.list.addAll(new NewsTitle(text).list);
+                com.java.twentynine.NewsText text= com.java.twentynine.JasonClass.StringtoJson(str, com.java.twentynine.NewsText.class);
+                title.list.addAll(new com.java.twentynine.NewsTitle(text).list);
             }
             scanf.close();
             return title;
@@ -177,17 +175,17 @@ public class Storage
 
             Log.d("ltl","rrr" + e.toString());
         }
-        return new NewsTitle();
+        return new com.java.twentynine.NewsTitle();
     }
-    public static NewsTitle findCollectionNews(Context context)
+    public static com.java.twentynine.NewsTitle findCollectionNews(Context context)
     {
-        NewsTitle title=new NewsTitle();
+        com.java.twentynine.NewsTitle title=new com.java.twentynine.NewsTitle();
         File file = new File(context.getFilesDir(), collectionfile);
         Scanner scanf=null;
         try
         {
             scanf=new Scanner(new FileInputStream(file));
-            while (scanf.hasNext()) title.list.addAll(JasonClass.StringtoJson(scanf.nextLine(),NewsTitle.class).list);
+            while (scanf.hasNext()) title.list.addAll(com.java.twentynine.JasonClass.StringtoJson(scanf.nextLine(), com.java.twentynine.NewsTitle.class).list);
             scanf.close();
         }catch(Exception e)
         {

@@ -1,4 +1,4 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 
 import android.annotation.TargetApi;

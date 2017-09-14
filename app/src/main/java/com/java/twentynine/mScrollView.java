@@ -1,8 +1,7 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 
 /**

@@ -1,4 +1,4 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 /**
  * Created by ltl on 2017/9/9.

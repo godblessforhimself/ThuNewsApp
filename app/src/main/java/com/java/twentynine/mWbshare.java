@@ -1,16 +1,13 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.sina.weibo.sdk.WbSdk;
-import com.sina.weibo.sdk.api.BaseMediaObject;
 import com.sina.weibo.sdk.api.MultiImageObject;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
@@ -139,6 +136,7 @@ public class mWbshare implements mWbshareInterface,WbShareCallback
     }
     private void showTip(String tips)
     {
-        Toast.makeText(mContext,tips,Toast.LENGTH_SHORT).show();
+        Log.d("mWbshare Tip", tips);
+
     }
 }

@@ -1,22 +1,17 @@
-package anonymouscompany.thunewsapp;
+package com.java.twentynine;
 
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +22,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -41,6 +35,7 @@ public class NewsActivity extends AppCompatActivity {
     BackendInter bi;
     mWbshare wbshareInstance;
     mTts ttsInstance;
+    String id;
     NewsText news;
     LinearLayout start,pause,share,collect;
     LinearLayout head,bottom;
@@ -88,7 +83,7 @@ public class NewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //先做一个加载界面
         setContentView(R.layout.loading);
-
+        id = getIntent().getStringExtra("NewsText");
         showTip("正在加载");
         getSupportActionBar().hide();
         handler = new Handler()  {
@@ -104,6 +99,9 @@ public class NewsActivity extends AppCompatActivity {
                 {
                     setContentView(R.layout.activity_news);
                     showTip("加载成功");
+                    bi.viewed(news, NewsActivity.this);
+                    Log.d("viewd?", "result" + bi.isviewed(news.news_ID, NewsActivity.this));
+
                     init();
                     if (bi.isCollectionNews(news.news_ID,NewsActivity.this))
                     {
@@ -134,6 +132,7 @@ public class NewsActivity extends AppCompatActivity {
                     if (bi.getPicturesDisplay(NewsActivity.this) == 0)
                     new Thread(getPicture).start();
                 }
+                setResult(msg.what);
             }
         };
         shareHandler = new Handler()
@@ -167,7 +166,7 @@ public class NewsActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    news = bi.getNewsText(getIntent().getStringExtra("NewsText"), NewsActivity.this);
+                    news = bi.getNewsText(id, NewsActivity.this);
                     Message msg = new Message();
                     msg.what = loadSuccess;
                     handler.sendMessage(msg);
@@ -418,7 +417,7 @@ public class NewsActivity extends AppCompatActivity {
     }
     private void showTip(String s)
     {
-        Toast.makeText(NewsActivity.this,s, Toast.LENGTH_LONG).show();
+        Log.d("NewsActivity.class","Tip = " + s);
     }
     private class mAdapter extends BaseExpandableListAdapter {
         List<NewsText.Keyword> keywordList;
